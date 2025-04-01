@@ -109,7 +109,7 @@ export default function Home() {
           Join thousands of users who have revolutionized their productivity with FusionNote.
         </p>
         <button className="rounded-full bg-white text-black px-8 py-3 font-medium">
-          Get Started - It's Free
+          Get Started - It&apos;s Free
         </button>
       </div>
 
