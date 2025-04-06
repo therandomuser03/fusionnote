@@ -1,44 +1,48 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
-import { Button } from "./ui/button";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react"
+import { Button } from "./ui/button"
+import { useState } from "react"
+import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation";
 import { logOutAction } from "@/actions/users";
 
 function LogOutButton() {
-  const { toast } = useToast();
-  const router = useRouter();
+    const {toast} = useToast();
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+    const handleLogOut = async () => {
+        setLoading(true)
 
-  const handleLogOut = async () => {
-    setLoading(true);
+        const { errorMessage } = await logOutAction();
 
-    const { errorMessage } = await logOutAction();
+        if (!errorMessage) {
+            toast({
+                title: "Logged out",
+                description: "You have been successfully logged out",
+                variant: "success",
+            });
+            router.push("/");
+        } else {
+            toast({
+                title: "Error",
+                description: "errorMessage",
+                variant: "destructive",
+            });
+        }
 
-    if (!errorMessage) {
-      router.push(`/?toastType=logOut`);
-    } else {
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    }
+        setLoading(false)
 
-    setLoading(false);
-  };
+        console.log("Logging out...");
+    };
 
   return (
-    <Button
-      variant="outline"
-      onClick={handleLogOut}
-      disabled={loading}
-      className="w-24"
-    >
-      {loading ? <Loader2 className="animate-spin" /> : "Log Out"}
+    <Button variant="outline"
+    onClick={handleLogOut}
+    disabled={loading}
+    className="w-24">
+        {loading ? <Loader2 className="animate-spin" /> : "Log Out"}
     </Button>
   );
 }
