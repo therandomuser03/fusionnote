@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   Bold, Italic, List, ListOrdered, Image as ImageIcon, 
   Heading1, Heading2, Code, X 

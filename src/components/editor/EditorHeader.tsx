@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Save, Trash, Share } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { FileText, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNotes } from '@/context/NotesContext';
