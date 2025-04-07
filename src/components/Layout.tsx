@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
-import { Menu, X } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
