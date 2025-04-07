@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { user } = useAuth();
   const { createNote } = useNotes();
-  const navigate = useNavigate();
 
   // Keyboard shortcut for creating a new note
   useHotkeys('ctrl+n', (e) => {
