@@ -45,8 +45,8 @@ const AuthForm = () => {
       <div className="w-full max-w-md">
         <Card>
           <CardHeader>
-            <CardTitle>{isLogin ? 'Sign in' : 'Create an account'}</CardTitle>
-            <CardDescription>
+            <CardTitle className='text-center mb-4'>{isLogin ? 'Sign in' : 'Create an account'}</CardTitle>
+            <CardDescription className='text-center'>
               {isLogin
                 ? 'Enter your email and password to access your notes'
                 : 'Sign up to start creating and managing your notes'}
