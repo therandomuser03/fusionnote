@@ -1,12 +1,12 @@
-
 import { useAuth } from '@/context/AuthContext';
 import { useNotes } from '@/context/NotesContext';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, LogOut, FileText, Search, Info } from 'lucide-react';
+import { PlusCircle, LogOut, FileText, Search, Info, ArrowLeft } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
+import { useNavigate } from 'react-router-dom';
 
 type SidebarProps = {
   isOpen: boolean;
@@ -16,9 +16,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const { signOut, user } = useAuth();
   const { notes, createNote, setCurrentNote, currentNote } = useNotes();
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   const handleNewNote = () => {
     createNote('Untitled Note', '');
+  };
+
+  // Handle sign out with redirect
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  // Go back to dashboard/home
+  const handleGoBack = () => {
+    navigate('/');
   };
 
   // Enhanced search that looks in both titles and content
@@ -36,20 +48,39 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const getContentPreview = (htmlContent: string, maxLength: number = 60): string => {
     if (!htmlContent) return '';
     
-    // Create a temporary element to parse HTML
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlContent;
-    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+    // Create a temporary element to parse HTML safely, works in browser environment
+    if (typeof window !== 'undefined') {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlContent;
+      const textContent = tempDiv.textContent || tempDiv.innerText || '';
+      
+      if (textContent.length <= maxLength) return textContent;
+      return textContent.substring(0, maxLength).trim() + '...';
+    }
     
-    if (textContent.length <= maxLength) return textContent;
-    return textContent.substring(0, maxLength).trim() + '...';
+    // Fallback for SSR or non-browser environments
+    const strippedContent = htmlContent.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (strippedContent.length <= maxLength) return strippedContent;
+    return strippedContent.substring(0, maxLength).trim() + '...';
   };
 
   return (
-    <aside className={`${isOpen ? 'w-64' : 'w-0'} lg:w-64 h-full bg-sidebar border-r transition-all duration-300 overflow-hidden flex flex-col dark:bg-sidebar dark:border-sidebar-border`}>
-      <div className="p-4 border-b flex flex-col gap-2 dark:border-sidebar-border">
+    <aside className={`${isOpen ? 'w-64' : 'w-0'} lg:w-64 h-full bg-muted/50 dark:bg-sidebar border-r transition-all duration-300 overflow-hidden flex flex-col dark:border-slate-800`}>
+      <div className="p-4 border-b flex flex-col gap-2 dark:border-slate-800">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="font-semibold text-lg">My Notes</h2>
+          <div className="flex items-center">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" onClick={handleGoBack}>
+                    <ArrowLeft className="h-5 w-5 text-muted-foreground" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Back to Dashboard</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <h2 className="font-semibold text-lg text-foreground dark:text-white ml-2">My Notes</h2>
+          </div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -104,7 +135,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               >
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-fusion-400 group-hover:text-fusion-600 dark:text-fusion-500 dark:group-hover:text-fusion-400 flex-shrink-0" />
-                  <div className="truncate font-medium">
+                  <div className="truncate font-medium text-foreground dark:text-white">
                     {note.title || 'Untitled Note'}
                   </div>
                 </div>
@@ -134,20 +165,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
         </div>
       </div>
       
-      <div className="p-4 border-t dark:border-sidebar-border">
+      <div className="p-4 border-t dark:border-slate-800">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div className="w-8 h-8 rounded-full bg-fusion-400 flex items-center justify-center text-white">
               {user?.email?.substring(0, 1).toUpperCase() || 'U'}
             </div>
-            <span className="ml-2 text-sm truncate max-w-[150px]">
+            <span className="ml-2 text-sm truncate max-w-[150px] text-foreground dark:text-white">
               {user?.email}
             </span>
           </div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" onClick={signOut}>
+                <Button variant="ghost" size="icon" onClick={handleSignOut}>
                   <LogOut className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>

@@ -80,7 +80,7 @@ const AuthForm = () => {
             <CardFooter className="flex flex-col space-y-2">
               <Button
                 type="submit"
-                className="w-full bg-fusion-500 hover:bg-fusion-600"
+                className="w-full hover:bg-neutral-300"
                 disabled={loading}
               >
                 {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}

@@ -1,11 +1,11 @@
-
 import React from 'react';
 import { 
   Bold, Italic, List, ListOrdered, Image as ImageIcon, 
-  Heading1, Heading2, Code 
+  Heading1, Heading2, Code, X 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Editor } from '@tiptap/react';
+import { useNotes } from '@/context/NotesContext';
 import {
   Tooltip,
   TooltipContent,
@@ -19,9 +19,16 @@ type EditorToolbarProps = {
 };
 
 export const EditorToolbar = ({ editor }: EditorToolbarProps) => {
+  const { setCurrentNote } = useNotes();
+
   if (!editor) {
     return null;
   }
+
+  const handleCloseNote = () => {
+    // Close the note by setting currentNote to null
+    setCurrentNote(null);
+  };
 
   return (
     <div className="border-b p-2 flex items-center gap-1 overflow-x-auto bg-muted/20 dark:bg-muted/5">
@@ -179,11 +186,29 @@ export const EditorToolbar = ({ editor }: EditorToolbarProps) => {
         </TooltipProvider>
       </div>
       
-      <div className="ml-auto text-xs text-muted-foreground">
-        <kbd className="px-1.5 py-0.5 bg-muted rounded border border-border text-[10px]">
-          Ctrl+S
-        </kbd>
-        <span className="ml-1">to save</span>
+      <div className="ml-auto flex items-center gap-2">
+        <span className="text-xs text-muted-foreground">
+          <kbd className="px-1.5 py-0.5 bg-muted rounded border border-border text-[10px]">
+            Ctrl+S
+          </kbd>
+          <span className="ml-1">to save</span>
+        </span>
+        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleCloseNote}
+                className="ml-2"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Close note</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
   );

@@ -1,9 +1,7 @@
-
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
-import { toast } from 'sonner';
 
+// Define types
 export type Note = {
   id: string;
   title: string;
@@ -16,195 +14,99 @@ export type Note = {
 type NotesContextType = {
   notes: Note[];
   currentNote: Note | null;
-  loading: boolean;
-  createNote: (title: string, content: string) => Promise<void>;
-  updateNote: (id: string, title: string, content: string) => Promise<void>;
-  deleteNote: (id: string) => Promise<void>;
   setCurrentNote: (note: Note | null) => void;
+  createNote: (title: string, content: string) => void;
+  updateNote: (id: string, title: string, content: string) => void;
+  deleteNote: (id: string) => void;
 };
 
+// Create context
 const NotesContext = createContext<NotesContextType | undefined>(undefined);
 
-export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// Provider component
+export const NotesProvider = ({ children }: { children: ReactNode }) => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [currentNote, setCurrentNote] = useState<Note | null>(null);
-  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
-  // Use a more efficient approach for fetchNotes
-  const fetchNotes = useCallback(async () => {
-    if (!user) return;
-    
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('notes')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('updated_at', { ascending: false });
-
-      if (error) throw error;
-      setNotes(data || []);
-      
-      // Set current note to the most recent note if available
-      if (data && data.length > 0 && !currentNote) {
-        setCurrentNote(data[0]);
-      }
-    } catch (error: any) {
-      toast.error("Error fetching notes", {
-        description: error.message
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [user, currentNote]);
-
+  // Load notes from localStorage when component mounts or user changes
   useEffect(() => {
     if (user) {
-      fetchNotes();
+      const storedNotes = localStorage.getItem(`fusionNote_notes_${user.id}`);
+      if (storedNotes) {
+        try {
+          setNotes(JSON.parse(storedNotes));
+        } catch (error) {
+          console.error('Failed to parse stored notes:', error);
+          setNotes([]);
+        }
+      }
       
-      // Set up real-time subscription for collaborative editing
-      const notesSubscription = supabase
-        .channel('notes_changes')
-        .on('postgres_changes', { 
-          event: '*', 
-          schema: 'public', 
-          table: 'notes',
-          filter: `user_id=eq.${user.id}`
-        }, (payload) => {
-          // Handle different events
-          if (payload.eventType === 'INSERT') {
-            const newNote = payload.new as Note;
-            setNotes(prevNotes => [newNote, ...prevNotes]);
-          } 
-          else if (payload.eventType === 'UPDATE') {
-            const updatedNote = payload.new as Note;
-            setNotes(prevNotes => 
-              prevNotes.map(note => 
-                note.id === updatedNote.id ? updatedNote : note
-              )
-            );
-            
-            // Update currentNote if it's the one being updated from another session
-            if (currentNote?.id === updatedNote.id) {
-              setCurrentNote(updatedNote);
-            }
-          }
-          else if (payload.eventType === 'DELETE') {
-            const deletedNoteId = payload.old.id;
-            setNotes(prevNotes => 
-              prevNotes.filter(note => note.id !== deletedNoteId)
-            );
-            
-            // If the deleted note was the current note, set currentNote to the first available note
-            if (currentNote?.id === deletedNoteId) {
-              setCurrentNote(prevNotes => 
-                prevNotes.filter(note => note.id !== deletedNoteId)[0] || null
-              );
-            }
-          }
-        })
-        .subscribe();
-
-      return () => {
-        supabase.removeChannel(notesSubscription);
-      };
+      // Reset current note when user logs in or page refreshes
+      setCurrentNote(null);
     } else {
       setNotes([]);
       setCurrentNote(null);
     }
-  }, [user, fetchNotes, currentNote]);
+  }, [user]);
 
-  const createNote = async (title: string, content: string) => {
-    try {
-      const newNote = {
+  // Save notes to localStorage whenever they change
+  useEffect(() => {
+    if (user && notes.length > 0) {
+      localStorage.setItem(`fusionNote_notes_${user.id}`, JSON.stringify(notes));
+    }
+  }, [notes, user]);
+
+  // Create a new note
+  const createNote = (title: string, content: string) => {
+    if (!user) return;
+    
+    const newNote: Note = {
+      id: `note_${Date.now()}`,
+      title,
+      content,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      user_id: user.id,
+    };
+    
+    setNotes((prevNotes) => [newNote, ...prevNotes]);
+    setCurrentNote(newNote);
+  };
+
+  // Update an existing note
+  const updateNote = (id: string, title: string, content: string) => {
+    setNotes((prevNotes) =>
+      prevNotes.map((note) =>
+        note.id === id
+          ? {
+              ...note,
+              title,
+              content,
+              updated_at: new Date().toISOString(),
+            }
+          : note
+      )
+    );
+    
+    // Also update currentNote if it's the one being edited
+    if (currentNote && currentNote.id === id) {
+      setCurrentNote({
+        ...currentNote,
         title,
         content,
-        user_id: user?.id,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-
-      const { data, error } = await supabase
-        .from('notes')
-        .insert([newNote])
-        .select();
-
-      if (error) throw error;
-
-      if (data) {
-        setNotes([data[0], ...notes]);
-        setCurrentNote(data[0]);
-        toast.success("Note created");
-      }
-    } catch (error: any) {
-      toast.error("Error creating note", {
-        description: error.message
+        updated_at: new Date().toISOString(),
       });
     }
   };
 
-  const updateNote = async (id: string, title: string, content: string) => {
-    try {
-      const { error } = await supabase
-        .from('notes')
-        .update({
-          title,
-          content,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', id);
-
-      if (error) throw error;
-
-      // Update local state
-      const updatedNotes = notes.map(note =>
-        note.id === id
-          ? { ...note, title, content, updated_at: new Date().toISOString() }
-          : note
-      );
-      
-      // Sort notes by updated_at (most recent first)
-      updatedNotes.sort((a, b) => 
-        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-      );
-      
-      setNotes(updatedNotes);
-      
-      // Update currentNote if it's the one being edited
-      if (currentNote?.id === id) {
-        setCurrentNote({ ...currentNote, title, content, updated_at: new Date().toISOString() });
-      }
-    } catch (error: any) {
-      toast.error("Error updating note", {
-        description: error.message
-      });
-    }
-  };
-
-  const deleteNote = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('notes')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      // Update local state
-      const filteredNotes = notes.filter(note => note.id !== id);
-      setNotes(filteredNotes);
-      
-      // If the deleted note was the current note, set currentNote to the first available note
-      if (currentNote?.id === id) {
-        setCurrentNote(filteredNotes.length > 0 ? filteredNotes[0] : null);
-      }
-      
-      toast.success("Note deleted");
-    } catch (error: any) {
-      toast.error("Error deleting note", {
-        description: error.message
-      });
+  // Delete a note
+  const deleteNote = (id: string) => {
+    setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+    
+    // Clear currentNote if it's the one being deleted
+    if (currentNote && currentNote.id === id) {
+      setCurrentNote(null);
     }
   };
 
@@ -213,11 +115,10 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       value={{
         notes,
         currentNote,
-        loading,
+        setCurrentNote,
         createNote,
         updateNote,
         deleteNote,
-        setCurrentNote,
       }}
     >
       {children}
@@ -225,6 +126,7 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
+// Custom hook to use the notes context
 export const useNotes = () => {
   const context = useContext(NotesContext);
   if (context === undefined) {
