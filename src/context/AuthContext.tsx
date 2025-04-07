@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Sign in function
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, _password: string) => {
     // In a real app, this would make an API call
     // For demo purposes, we'll just create a mock user
     const mockUser = { email, id: `user_${Date.now()}` };
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Sign up function
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, _password: string) => {
     // Similar to signIn for this demo
     const mockUser = { email, id: `user_${Date.now()}` };
     

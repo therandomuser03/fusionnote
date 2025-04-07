@@ -37,7 +37,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // If not logged in, redirect to auth form
   if (!user) {
-    return <Navigate to="/authform" />;
+    return <Navigate to="/authform" replace />;
   }
 
   // When the user is logged in, render the full layout
