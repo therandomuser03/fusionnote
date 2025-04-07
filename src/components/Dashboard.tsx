@@ -11,6 +11,9 @@ import {
 import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { FC, SVGProps } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 interface Feature {
   name: string;
@@ -54,10 +57,20 @@ const features: Feature[] = [
 ];
 
 function Dashboard() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
+
   return (
     <>
       {/* Navbar */}
-      <nav className="sticky top-0 z-10 w-full border-b bg-neutral-950 text-white backdrop-blur">
+      <nav className="sticky top-0 z-10 w-full border-b bg-background dark:bg-neutral-950 text-foreground dark:text-white backdrop-blur">
         <div className="container mx-auto flex h-14 items-center px-4">
           {/* Left side (Logo) */}
           <div className="flex items-center space-x-2">
@@ -80,7 +93,7 @@ function Dashboard() {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative bg-neutral-950 text-white isolate px-6 pt-14 lg:px-8">
+      <div className="relative bg-background dark:bg-neutral-950 text-foreground dark:text-white isolate px-6 pt-14 lg:px-8">
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
           <div className="text-center">
             <div className="flex justify-center mb-8">
@@ -105,7 +118,7 @@ function Dashboard() {
       </div>
 
       {/* Features Section */}
-      <div className="py-24 sm:py-32 bg-neutral-950 text-white">
+      <div className="py-24 sm:py-32 bg-muted/50 dark:bg-neutral-950 text-foreground dark:text-white">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:text-center">
             <h2 className="text-base font-semibold leading-7 text-primary">
