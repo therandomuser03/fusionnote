@@ -20,45 +20,57 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Create a provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  // Check for stored user on initial load
+  // Set mounted to true once on client side and load stored user
   useEffect(() => {
-    const storedUser = localStorage.getItem('fusionNote_user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Failed to parse stored user:', error);
-        localStorage.removeItem('fusionNote_user');
+    setMounted(true);
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem('fusionNote_user');
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          console.error('Failed to parse stored user:', error);
+          localStorage.removeItem('fusionNote_user');
+        }
       }
     }
   }, []);
 
   // Sign in function
   const signIn = async (email: string, _password: string) => {
-    // In a real app, this would make an API call
-    // For demo purposes, we'll just create a mock user
+    // In a real app, this would make an API call.
     const mockUser = { email, id: `user_${Date.now()}` };
-    
-    // Save user to localStorage for persistence
-    localStorage.setItem('fusionNote_user', JSON.stringify(mockUser));
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('fusionNote_user', JSON.stringify(mockUser));
+    }
     setUser(mockUser);
   };
 
   // Sign up function
   const signUp = async (email: string, _password: string) => {
-    // Similar to signIn for this demo
     const mockUser = { email, id: `user_${Date.now()}` };
-    
-    localStorage.setItem('fusionNote_user', JSON.stringify(mockUser));
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('fusionNote_user', JSON.stringify(mockUser));
+    }
     setUser(mockUser);
   };
 
   // Sign out function
   const signOut = async () => {
-    localStorage.removeItem('fusionNote_user');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('fusionNote_user');
+    }
     setUser(null);
   };
+
+  // Only render children on the client side after mounting
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <AuthContext.Provider value={{ user, signIn, signUp, signOut }}>
