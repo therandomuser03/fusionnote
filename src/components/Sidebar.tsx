@@ -65,7 +65,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   };
 
   return (
-    <aside className={`${isOpen ? 'w-64' : 'w-0'} lg:w-64 h-full bg-muted/50 dark:bg-sidebar border-r transition-all duration-300 overflow-hidden flex flex-col dark:border-slate-800`}>
+    <aside 
+      className={`${isOpen ? 'w-64' : 'w-0'} h-full bg-muted/50 dark:bg-sidebar border-r transition-all duration-300 flex flex-col dark:border-slate-800`}
+      style={{ overflow: isOpen ? 'auto' : 'hidden' }}
+    >
       <div className="p-4 border-b flex flex-col gap-2 dark:border-slate-800">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">

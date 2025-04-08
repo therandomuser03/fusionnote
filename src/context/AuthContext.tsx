@@ -60,9 +60,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           }
           setUser(foundUser);
           return true;
-        } else {
-          console.error('Invalid email or password');
-          return false;
         }
       } catch (error) {
         console.error('Failed to parse stored users:', error);
@@ -90,6 +87,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error('Failed to parse stored users:', error);
+        // If we can't parse, start with empty array
+        users = [];
       }
     }
     
