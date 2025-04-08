@@ -1,7 +1,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { useNotes } from '@/context/NotesContext';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, LogOut, FileText, Search, Info, ArrowLeft } from 'lucide-react';
+import { PlusCircle, LogOut, FileText, Search, Info } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -25,11 +25,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   // Handle sign out with redirect
   const handleSignOut = async () => {
     await signOut();
-    navigate('/');
-  };
-
-  // Go back to dashboard/home
-  const handleGoBack = () => {
     navigate('/');
   };
 
