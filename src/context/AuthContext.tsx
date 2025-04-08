@@ -4,13 +4,14 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 type User = {
   email: string;
   id: string;
+  password: string; // Add password to store (in a real app, you'd never store plain passwords)
 };
 
 // Define the context type
 type AuthContextType = {
   user: User | null;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<boolean>;
+  signUp: (email: string, password: string) => Promise<boolean>;
   signOut: () => Promise<void>;
 };
 
@@ -40,23 +41,76 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Sign in function
-  const signIn = async (email: string, _password: string) => {
-    const mockUser = { email, id: `user_${Date.now()}` };
-
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('fusionNote_user', JSON.stringify(mockUser));
+  const signIn = async (email: string, password: string) => {
+    // Get all users from localStorage
+    const allUsers = localStorage.getItem('fusionNote_all_users');
+    let users: User[] = [];
+    
+    if (allUsers) {
+      try {
+        users = JSON.parse(allUsers);
+        
+        // Find user with matching email and password
+        const foundUser = users.find(u => u.email === email && u.password === password);
+        
+        if (foundUser) {
+          // Store user in state and localStorage
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('fusionNote_user', JSON.stringify(foundUser));
+          }
+          setUser(foundUser);
+          return true;
+        } else {
+          console.error('Invalid email or password');
+          return false;
+        }
+      } catch (error) {
+        console.error('Failed to parse stored users:', error);
+      }
     }
-    setUser(mockUser);
+    
+    // If no users or user not found/password doesn't match
+    return false;
   };
 
   // Sign up function
-  const signUp = async (email: string, _password: string) => {
-    const mockUser = { email, id: `user_${Date.now()}` };
-
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('fusionNote_user', JSON.stringify(mockUser));
+  const signUp = async (email: string, password: string) => {
+    // Get all users from localStorage
+    const allUsers = localStorage.getItem('fusionNote_all_users');
+    let users: User[] = [];
+    
+    if (allUsers) {
+      try {
+        users = JSON.parse(allUsers);
+        
+        // Check if email already exists
+        if (users.some(u => u.email === email)) {
+          console.error('Email already in use');
+          return false;
+        }
+      } catch (error) {
+        console.error('Failed to parse stored users:', error);
+      }
     }
-    setUser(mockUser);
+    
+    // Create new user
+    const newUser: User = { 
+      email, 
+      id: `user_${Date.now()}`,
+      password
+    };
+    
+    // Add to users list
+    users.push(newUser);
+    
+    // Save to localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('fusionNote_all_users', JSON.stringify(users));
+      localStorage.setItem('fusionNote_user', JSON.stringify(newUser));
+    }
+    
+    setUser(newUser);
+    return true;
   };
 
   // Sign out function

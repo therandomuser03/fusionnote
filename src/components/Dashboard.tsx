@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   PenLine,
   BookOpen,
@@ -10,10 +10,8 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { FC, SVGProps } from "react";
+import { FC, SVGProps, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 interface Feature {
   name: string;
@@ -62,8 +60,9 @@ function Dashboard() {
   
   // Redirect to dashboard if already logged in
   useEffect(() => {
+    // Only redirect if user exists and is not undefined (i.e., we've checked auth status)
     if (user) {
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     }
   }, [user, navigate]);
 
@@ -81,12 +80,20 @@ function Dashboard() {
           </div>
           {/* Right side (Actions) */}
           <div className="ml-auto flex items-center space-x-2">
-            <Button variant="ghost" asChild>
-              <Link to="/authform">Sign In</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/authform">Get Started</Link>
-            </Button>
+            {!user ? (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link to="/authform">Sign In</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/authform">Get Started</Link>
+                </Button>
+              </>
+            ) : (
+              <Button asChild>
+                <Link to="/dashboard">Go to Notes</Link>
+              </Button>
+            )}
             <ThemeToggle />
           </div>
         </div>
