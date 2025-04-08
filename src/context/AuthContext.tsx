@@ -19,12 +19,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Create a provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [mounted, setMounted] = useState(false);
+  // Start with an undefined user so we know whether we've hydrated yet.
+  const [user, setUser] = useState<User | null | undefined>(undefined);
 
-  // Set mounted to true once on client side and load stored user
   useEffect(() => {
-    setMounted(true);
     if (typeof window !== 'undefined') {
       const storedUser = localStorage.getItem('fusionNote_user');
       if (storedUser) {
@@ -33,14 +31,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {
           console.error('Failed to parse stored user:', error);
           localStorage.removeItem('fusionNote_user');
+          setUser(null);
         }
+      } else {
+        setUser(null);
       }
     }
   }, []);
 
   // Sign in function
   const signIn = async (email: string, _password: string) => {
-    // In a real app, this would make an API call.
     const mockUser = { email, id: `user_${Date.now()}` };
 
     if (typeof window !== 'undefined') {
@@ -67,8 +67,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
-  // Only render children on the client side after mounting
-  if (!mounted) {
+  // Until we've determined the auth state, render nothing (or a loading indicator)
+  if (user === undefined) {
     return null;
   }
 
