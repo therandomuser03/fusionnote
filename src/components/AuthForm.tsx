@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { toast } from 'sonner';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -26,15 +27,34 @@ const AuthForm = () => {
     setLoading(true);
     
     try {
+      let success = false;
+      
       if (isLogin) {
-        await signIn(email, password);
+        success = await signIn(email, password);
+        if (!success) {
+          toast.error("Invalid email or password");
+        }
       } else {
-        await signUp(email, password);
+        if (password.length < 6) {
+          toast.error("Password must be at least 6 characters");
+          setLoading(false);
+          return;
+        }
+        
+        success = await signUp(email, password);
+        if (!success) {
+          toast.error("Email already in use");
+        }
       }
+      
       // Redirect to dashboard after successful authentication
-      navigate('/dashboard');
+      if (success) {
+        toast.success(isLogin ? "Successfully signed in" : "Account created successfully");
+        navigate('/dashboard');
+      }
     } catch (error) {
       console.error('Authentication error:', error);
+      toast.error("An error occurred during authentication");
     } finally {
       setLoading(false);
     }
@@ -74,7 +94,13 @@ const AuthForm = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  minLength={6}
                 />
+                {!isLogin && (
+                  <p className="text-xs text-muted-foreground">
+                    Password must be at least 6 characters long.
+                  </p>
+                )}
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-2">

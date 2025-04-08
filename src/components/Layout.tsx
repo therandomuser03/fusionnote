@@ -31,7 +31,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Toggle sidebar
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    setSidebarOpen(prevState => !prevState);
   };
 
   // If not logged in, redirect to auth form
@@ -42,7 +42,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   // When the user is logged in, render the full layout
   return (
     <div className="flex h-screen bg-background">
-      <Sidebar isOpen={sidebarOpen} />
+      {/* Force sidebar to update by using key prop tied to sidebarOpen state */}
+      <Sidebar key={`sidebar-${sidebarOpen ? 'open' : 'closed'}`} isOpen={sidebarOpen} />
       <main className="flex-1 flex flex-col h-full overflow-hidden">
         <header className="flex items-center justify-between px-4 py-2 bg-background border-b">
           <div className="flex items-center">
@@ -54,6 +55,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     size="icon"
                     onClick={toggleSidebar}
                     className="mr-2"
+                    aria-label={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
                   >
                     <Menu className="h-5 w-5" />
                   </Button>

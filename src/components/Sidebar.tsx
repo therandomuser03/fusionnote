@@ -65,20 +65,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   };
 
   return (
-    <aside className={`${isOpen ? 'w-64' : 'w-0'} lg:w-64 h-full bg-muted/50 dark:bg-sidebar border-r transition-all duration-300 overflow-hidden flex flex-col dark:border-slate-800`}>
+    <aside 
+      className={`${isOpen ? 'w-64' : 'w-0'} h-full bg-muted/50 dark:bg-sidebar border-r transition-all duration-300 flex flex-col dark:border-slate-800`}
+      style={{ overflow: isOpen ? 'auto' : 'hidden' }}
+    >
       <div className="p-4 border-b flex flex-col gap-2 dark:border-slate-800">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" onClick={handleGoBack}>
-                    <ArrowLeft className="h-5 w-5 text-muted-foreground" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Back to Dashboard</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
             <h2 className="font-semibold text-lg text-foreground dark:text-white ml-2">My Notes</h2>
           </div>
           <TooltipProvider>
