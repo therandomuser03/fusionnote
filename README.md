@@ -118,5 +118,3 @@ FusionNote leverages several powerful libraries and frameworks:
 - [React Query](https://tanstack.com/query/latest)
 
 ---
-
-This README provides an overview of FusionNote's capabilities, setup instructions, and guidelines for contributing. Customize it further based on your project specifics and any additional functionality you plan to include.
