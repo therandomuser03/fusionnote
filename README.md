@@ -1,120 +1,92 @@
 # FusionNote
 
-FusionNote is a powerful, open-source note-taking app that seamlessly integrates with your favorite platforms. Built with modern web technologies, FusionNote is designed to be fast, intuitive, and flexible—empowering you to capture your ideas and organize your thoughts effortlessly.
+FusionNote is a modern note-taking application built with Next.js, Tailwind CSS, and Supabase.
 
 ## Features
 
-- **Rich Text Editing:** Powered by Tiptap, FusionNote provides a feature-rich editing experience with support for images, placeholders, and more.
-- **Modular UI Components:** Utilizes Radix UI components for accessible, customizable, and consistent interface elements.
-- **Theming & Styling:** Easily customize the look and feel of your notes using Tailwind CSS and next-themes for dark/light mode support.
-- **State Management & Data Fetching:** Leveraging React Query for robust data fetching and caching strategies.
-- **Responsive Design:** Fully responsive design with support for dynamic layouts and interactive components.
-- **Platform Integration:** Integrates seamlessly with platforms like Supabase for backend services and user authentication.
+- User authentication with Supabase
+- Create, read, update, and delete notes
+- Responsive design for all devices
+- Modern UI with shadcn/ui components
+
+## Tech Stack
+
+- **Frontend**: Next.js, React, TypeScript
+- **Styling**: Tailwind CSS, shadcn/ui
+- **Backend**: Supabase (Authentication, Database)
+- **Deployment**: Vercel
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v14 or above)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- Node.js 18.x or later
+- npm or yarn
+- Supabase account
 
 ### Installation
 
-1. **Clone the repository:**
+1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/your-username/fusionnote.git
-   cd fusionnote
-   ```
+```bash
+git clone https://github.com/yourusername/fusion-note.git
+cd fusion-note
+```
 
-2. **Install dependencies:**
+2. Install dependencies:
 
-   ```bash
-   npm install
-   # or if using yarn:
-   yarn install
-   ```
+```bash
+npm install
+# or
+yarn install
+```
 
-## Development
+3. Create a `.env.local` file in the root directory with your Supabase credentials:
 
-FusionNote uses Vite as the development server and build tool, and TypeScript for type safety.
+```
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
 
-### Available Scripts
+4. Run the development server:
 
-- **Start the Development Server:**
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-  ```bash
-  npm run dev
-  # or
-  yarn dev
-  ```
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-- **Build for Production:**
+## Supabase Setup
 
-  ```bash
-  npm run build
-  # or
-  yarn build
-  ```
+1. Create a new Supabase project
+2. Run the SQL script in `supabase/schema.sql` to set up the database tables and policies
+3. Configure authentication providers in the Supabase dashboard
 
-- **Preview the Production Build:**
+## Project Structure
 
-  ```bash
-  npm run preview
-  # or
-  yarn preview
-  ```
-
-- **Lint the Code:**
-
-  ```bash
-  npm run lint
-  # or
-  yarn lint
-  ```
-
-### Code Structure
-
-- **/src:** Contains the main source code including components, pages, and hooks.
-- **/public:** Static assets used throughout the application.
-- **/styles:** Tailwind CSS configuration and custom style sheets.
-- **vite.config.js:** Configuration for Vite.
-- **tsconfig.json:** TypeScript configuration.
-
-## Customization
-
-FusionNote is built with flexibility in mind:
-
-- **UI Components:** Enhance or modify the UI by extending or replacing Radix UI components.
-- **Editor Extensions:** Add or remove editor functionalities by configuring Tiptap extensions.
-- **Theming:** Modify the theme or extend Tailwind CSS configurations in the project’s configuration files.
-- **API Integration:** The project comes pre-configured with Supabase for backend services; update your Supabase keys in your environment variables as needed.
-
-## Contributing
-
-FusionNote welcomes contributions from the community. To get started:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeature`).
-3. Commit your changes (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature/YourFeature`).
-5. Open a Pull Request detailing your changes.
-
-For any major changes, please open an issue first to discuss what you would like to change.
+```
+fusion-note/
+├── public/              # Static assets
+├── src/
+│   ├── app/             # Next.js app router pages
+│   ├── components/      # React components
+│   ├── contexts/        # React contexts
+│   ├── lib/             # Utility functions and libraries
+│   └── styles/          # Global styles
+├── .env.local           # Environment variables
+├── package.json         # Dependencies and scripts
+└── README.md            # Project documentation
+```
 
 ## License
 
-FusionNote is open-source software licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgements
 
-FusionNote leverages several powerful libraries and frameworks:
-- [React](https://reactjs.org/)
-- [Vite](https://vitejs.dev/)
+- [Next.js](https://nextjs.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Radix UI](https://www.radix-ui.com/)
-- [Tiptap](https://tiptap.dev/)
-- [Supabase](https://supabase.com/)
-- [React Query](https://tanstack.com/query/latest)
-
----
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Supabase](https://supabase.io/)

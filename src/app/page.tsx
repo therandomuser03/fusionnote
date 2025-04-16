@@ -1,4 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   PenLine,
   BookOpen,
@@ -8,10 +11,8 @@ import {
   Lock,
   Palette,
 } from "lucide-react";
-import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { FC, SVGProps, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { FC, SVGProps } from "react";
 
 interface Feature {
   name: string;
@@ -22,8 +23,7 @@ interface Feature {
 const features: Feature[] = [
   {
     name: "Rich Text Editor",
-    description:
-      "Write and format your notes with our intuitive WYSIWYG editor.",
+    description: "Write and format your notes with our intuitive WYSIWYG editor.",
     icon: BookOpen,
   },
   {
@@ -33,8 +33,7 @@ const features: Feature[] = [
   },
   {
     name: "Export & Share",
-    description:
-      "Export your notes to Notion, Google Keep, and other platforms.",
+    description: "Export your notes to Notion, Google Keep, and other platforms.",
     icon: Share2,
   },
   {
@@ -54,17 +53,8 @@ const features: Feature[] = [
   },
 ];
 
-function Dashboard() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  
-  // Redirect to dashboard if already logged in
-  useEffect(() => {
-    // Only redirect if user exists and is not undefined (i.e., we've checked auth status)
-    if (user) {
-      navigate("/dashboard", { replace: true });
-    }
-  }, [user, navigate]);
+export default function Home() {
+  const router = useRouter();
 
   return (
     <>
@@ -73,28 +63,19 @@ function Dashboard() {
         <div className="container mx-auto flex h-14 items-center px-4">
           {/* Left side (Logo) */}
           <div className="flex items-center space-x-2">
-            <Link to="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2">
               <PenLine className="h-6 w-6" />
               <span className="font-bold">FusionNote</span>
             </Link>
           </div>
           {/* Right side (Actions) */}
           <div className="ml-auto flex items-center space-x-2">
-            {!user ? (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link to="/authform">Sign In</Link>
-                </Button>
-                <Button asChild>
-                  <Link to="/authform">Get Started</Link>
-                </Button>
-              </>
-            ) : (
-              <Button asChild>
-                <Link to="/dashboard">Go to Notes</Link>
-              </Button>
-            )}
-            <ThemeToggle />
+            <Button variant="ghost" asChild>
+              <Link href="/authform">Sign In</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/authform">Get Started</Link>
+            </Button>
           </div>
         </div>
       </nav>
@@ -114,7 +95,7 @@ function Dashboard() {
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Button size="lg" asChild>
-                <Link to="/authform">Start Writing</Link>
+                <Link href="/authform">Start Writing</Link>
               </Button>
               <Button variant="outline" size="lg">
                 Learn more
@@ -160,5 +141,3 @@ function Dashboard() {
     </>
   );
 }
-
-export default Dashboard;
