@@ -13,6 +13,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FC, SVGProps } from "react";
+import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
+import { ThemeToggle } from "@/components/theme-toggle"
+import { useTheme } from "next-themes"
 
 interface Feature {
   name: string;
@@ -55,6 +59,31 @@ const features: Feature[] = [
 
 export default function Home() {
   const router = useRouter();
+  const { isSignedIn } = useUser();
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push('/dashboard');
+    }
+  }, [isSignedIn, router]);
+  const clerkAppearance = {
+    baseTheme: theme === 'dark' ? undefined : undefined,
+    elements: {
+      card: "bg-background border-border",
+      headerTitle: "text-foreground", 
+      headerSubtitle: "text-muted-foreground",
+      socialButtonsBlockButton: "bg-background border-border text-foreground hover:bg-muted",
+      dividerLine: "bg-border",
+      dividerText: "text-muted-foreground",
+      formFieldLabel: "text-foreground",
+      formFieldInput: "bg-background border-input text-foreground",
+      formButtonPrimary: "bg-primary text-primary-foreground hover:bg-primary/90",
+      footerActionLink: "text-primary hover:text-primary/90",
+      formFieldInputShowPasswordButton: "text-muted-foreground",
+      footer: "text-muted-foreground",
+    },
+  };
 
   return (
     <>
@@ -70,12 +99,13 @@ export default function Home() {
           </div>
           {/* Right side (Actions) */}
           <div className="ml-auto flex items-center space-x-2">
-            <Button variant="ghost" asChild>
-              <Link href="/authform">Sign In</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/authform">Get Started</Link>
-            </Button>
+            <ThemeToggle />
+            <SignInButton mode="modal" appearance={clerkAppearance}>
+              <Button variant="ghost">Log In</Button>
+            </SignInButton>
+            <SignUpButton mode="modal" appearance={clerkAppearance}>
+              <Button>Get Started</Button>
+            </SignUpButton>
           </div>
         </div>
       </nav>
@@ -94,9 +124,9 @@ export default function Home() {
               A powerful, open-source note-taking app that seamlessly integrates with your favorite platforms.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button size="lg" asChild>
-                <Link href="/authform">Start Writing</Link>
-              </Button>
+              <SignInButton mode="modal">
+                <Button size="lg">Start Writing</Button>
+              </SignInButton>
               <Button variant="outline" size="lg">
                 Learn more
               </Button>
