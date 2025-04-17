@@ -39,10 +39,13 @@ export async function getNotes(token: string | null, userId: string | null) {
       .eq('user_id', userId)
       .order('updated_at', { ascending: false })
 
-    if (error) throw error
+    if (error) {
+      console.error('Supabase returned an error:', error.message || error)
+      return null
+    }
     return data
   } catch (error) {
-    console.error('Error fetching notes:', error)
+    console.error('Error fetching notes:', JSON.stringify(error, null, 2))
     return null
   }
 }

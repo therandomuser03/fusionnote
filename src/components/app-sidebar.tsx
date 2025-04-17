@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sidebar"
 import { useRouter } from "next/navigation"
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ refreshTrigger, ...props }: React.ComponentProps<typeof Sidebar> & { refreshTrigger?: number }) {
   const router = useRouter()
 
   const handleNewNote = () => {
@@ -42,7 +42,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NotesList />
+        <NotesList refreshTrigger={refreshTrigger} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

@@ -213,7 +213,6 @@ const MenuBar = ({ editor, onSave, title, setTitle }: {
 export function TiptapEditor({ note, onSave }: { note?: Note, onSave?: (note: Note) => void }) {
   const { getToken, userId } = useAuth()
   const [title, setTitle] = useState(note?.title || '')
-  const [saving, setSaving] = useState(false)
 
   const editor = useEditor({
     extensions: [
@@ -228,6 +227,11 @@ export function TiptapEditor({ note, onSave }: { note?: Note, onSave?: (note: No
       Image,
       Placeholder.configure({
         placeholder: 'Start writing your note...',
+        emptyEditorClass: 'is-editor-empty',
+        emptyNodeClass: 'is-node-empty',
+        showOnlyWhenEditable: true,
+        showOnlyCurrent: true,
+        includeChildren: true,
       }),
       CharacterCount,
       TaskList,
@@ -239,48 +243,134 @@ export function TiptapEditor({ note, onSave }: { note?: Note, onSave?: (note: No
       }),
     ],
     content: note?.content || '',
+    autofocus: true,
+    editable: true,
+    enableInputRules: true,
+    enablePasteRules: true,
+    editorProps: {
+      handleDOMEvents: {
+        keydown: (view, event) => {
+          // Prevent default browser shortcuts when editor is focused
+          if (view.hasFocus()) {
+            const { key, ctrlKey, metaKey, shiftKey } = event
+            
+            // List of shortcuts to handle
+            const shortcuts: Record<string, () => boolean> = {
+              'b': () => {
+                event.preventDefault()
+                return editor?.chain().focus().toggleBold().run() || false
+              },
+              'i': () => {
+                event.preventDefault()
+                return editor?.chain().focus().toggleItalic().run() || false
+              },
+              'h': () => {
+                event.preventDefault()
+                return editor?.chain().focus().toggleHeading({ level: 1 }).run() || false
+              },
+              'l': () => {
+                event.preventDefault()
+                return editor?.chain().focus().toggleBulletList().run() || false
+              },
+              's': () => {
+                event.preventDefault()
+                handleSave()
+                return true
+              },
+              'z': () => {
+                event.preventDefault()
+                if (shiftKey) {
+                  editor?.chain().focus().redo().run()
+                } else {
+                  editor?.chain().focus().undo().run()
+                }
+                return true
+              },
+              'y': () => {
+                event.preventDefault()
+                editor?.chain().focus().redo().run()
+                return true
+              },
+              'f': () => {
+                event.preventDefault()
+                // Find functionality will be implemented later
+                return true
+              },
+              'a': () => {
+                event.preventDefault()
+                editor?.chain().focus().selectAll().run()
+                return true
+              }
+            }
+
+            // Handle backspace with modifier
+            if ((ctrlKey || metaKey) && key === 'Backspace') {
+              event.preventDefault()
+              editor?.chain().focus().deleteRange({ from: editor.state.selection.$anchor.pos - 1, to: editor.state.selection.$anchor.pos }).run()
+              return true
+            }
+
+            // Check if the pressed key combination matches any shortcut
+            if ((ctrlKey || metaKey) && shortcuts[key]) {
+              shortcuts[key]()
+              return true
+            }
+
+            // Allow native browser behavior for word navigation
+            if ((ctrlKey || metaKey) && ['ArrowLeft', 'ArrowRight', 'Backspace'].includes(key)) {
+              return false
+            }
+          }
+          return false
+        }
+      }
+    }
   })
+
+  if (!editor) {
+    return null
+  }
 
   const handleSave = async () => {
     if (!editor || !userId) return
 
-    setSaving(true)
     try {
       const content = editor.getHTML()
       const token = await getToken()
+      
       let savedNote: Note | null
-
-      if (note?.id) {
-        savedNote = await updateNote(note.id, title || 'Untitled Note', content, token, userId)
+      if (note) {
+        savedNote = await updateNote(note.id, title, content, token, userId)
       } else {
-        savedNote = await createNote(title || 'Untitled Note', content, token, userId)
+        savedNote = await createNote(title, content, token, userId)
       }
 
-      if (savedNote) {
-        onSave?.(savedNote)
-        toast.success('Note saved successfully')
-      } else {
-        toast.error('Failed to save note')
+      if (savedNote && onSave) {
+        onSave(savedNote)
       }
     } catch (error) {
       console.error('Error saving note:', error)
       toast.error('Failed to save note')
-    } finally {
-      setSaving(false)
     }
   }
 
   return (
-    <div className="relative min-h-[500px] border rounded-lg">
+    <div className="flex flex-col h-full">
       <MenuBar editor={editor} onSave={handleSave} title={title} setTitle={setTitle} />
-      <EditorContent editor={editor} className="prose prose-sm max-w-none p-4" />
-      {saving && (
-        <div className="absolute bottom-4 right-4 text-sm text-muted-foreground">
-          Saving...
-        </div>
-      )}
-      <div className="absolute bottom-4 left-4 text-sm text-muted-foreground">
-        {editor?.storage.characterCount.characters()} characters
+      <div 
+        className="flex-1 overflow-auto p-4"
+        onClick={() => editor.commands.focus()}
+        onKeyDown={(e) => {
+          // Prevent default browser shortcuts when editor is focused
+          if (editor.isFocused && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault()
+          }
+        }}
+      >
+        <EditorContent 
+          editor={editor} 
+          className="prose dark:prose-invert max-w-none focus:outline-none" 
+        />
       </div>
     </div>
   )
