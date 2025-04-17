@@ -99,13 +99,13 @@ export default function Home() {
           </div>
           {/* Right side (Actions) */}
           <div className="ml-auto flex items-center space-x-2">
-            <ThemeToggle />
             <SignInButton mode="modal" appearance={clerkAppearance}>
               <Button variant="ghost">Log In</Button>
             </SignInButton>
             <SignUpButton mode="modal" appearance={clerkAppearance}>
               <Button>Get Started</Button>
             </SignUpButton>
+            <ThemeToggle />
           </div>
         </div>
       </nav>

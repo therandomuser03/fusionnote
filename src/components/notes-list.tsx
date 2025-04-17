@@ -26,7 +26,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-export function NotesList() {
+export function NotesList({ refreshTrigger }: { refreshTrigger?: number }) {
   const { getToken, userId } = useAuth()
   const [notes, setNotes] = useState<Note[]>([])
   const [loading, setLoading] = useState(true)
@@ -43,7 +43,7 @@ export function NotesList() {
       setLoading(false)
     }
     fetchNotes()
-  }, [getToken, userId])
+  }, [getToken, userId, refreshTrigger])
 
   const handleDelete = async (id: string) => {
     if (!userId) return
@@ -84,7 +84,7 @@ export function NotesList() {
       
       <ScrollArea className="flex-1">
         {notes.length === 0 ? (
-          <div className="p-4 text-center text-muted-foreground">No notes yet. Create your first note!</div>
+          <div className="p-4 text-left text-muted-foreground">No notes yet. Create your first note!</div>
         ) : (
           <div className="p-2">
             {notes.map((note) => (
