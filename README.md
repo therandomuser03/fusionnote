@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 FusionNote
 
-## Getting Started
+FusionNote is a modern, AI-powered rich text editor app — built for users who want a clean, Notion-style note-taking experience, with smart features like summarization, search, and tagging.
 
-First, run the development server:
+Whether you're organizing thoughts, journaling, or writing documentation, FusionNote blends usability, AI, and design for the ultimate note workflow.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+<br/>
+
+![FusionNote Screenshot](public/og-image.png)
+
+---
+
+## ✨ Features
+
+- ⚡ **Real-Time Rich Text Editing** (Tiptap-based)
+- 🧠 **AI Summarization** powered by OpenAI
+- 🔐 **Authentication** via Supabase or Clerk
+- 🗂️ **Tagging & Filtering**
+- 🔎 **Searchable Notes**
+- 🌓 **Dark Mode Support**
+- 🧩 **Responsive UI** with TailwindCSS + Shadcn UI
+- 🚀 **Deployed on Vercel**
+
+---
+
+## 🛠 Tech Stack
+
+| Area          | Tech                                     |
+|---------------|------------------------------------------|
+| Framework     | [Next.js (App Router)](https://nextjs.org/) |
+| Styling       | [Tailwind CSS](https://tailwindcss.com/), [Shadcn UI](https://ui.shadcn.com/) |
+| Auth          | [Supabase Auth](https://supabase.com/) or [Clerk](https://clerk.dev/) |
+| Database      | [MongoDB Atlas](https://www.mongodb.com/) |
+| ORM           | [Prisma](https://www.prisma.io/)         |
+| Rich Editor   | [Tiptap](https://tiptap.dev/)            |
+| AI            | [OpenAI API](https://platform.openai.com/) |
+| Deployment    | [Vercel](https://vercel.com/)            |
+
+---
+
+## 🚧 Folder Structure (Simplified)
+
+```
+fusionnote/
+├── app/              → Next.js routes
+├── components/       → UI, Editor, Notes, Layout
+├── context/          → Theme/Auth providers
+├── hooks/            → useAuth, useNotes, etc.
+├── lib/              → DB, AI, Auth server utils
+├── prisma/           → Prisma schema + client
+├── public/           → Static assets
+├── utils/            → Client helpers (API, summarization)
+└── types/            → TypeScript interfaces
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔐 Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+FusionNote supports authentication via:
 
-## Learn More
+- **Supabase Auth** – quick setup, free tier, email magic link
+- **Clerk Auth** – advanced features like OAuth, user management, UI out of the box
 
-To learn more about Next.js, take a look at the following resources:
+Switchable depending on preference. Auth logic lives in `lib/auth.ts` and `context/AuthContext.tsx`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧠 AI Summarization
 
-## Deploy on Vercel
+Notes can be summarized using OpenAI’s GPT-4 or GPT-3.5 via:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```ts
+POST /api/notes/summarize
+{
+  "noteId": "abc123"
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Uses serverless route handlers and OpenAI SDK.
+
+---
+
+## 🧪 Local Development
+
+### 1. Clone repo & install deps
+
+```bash
+git clone https://github.com/your-username/fusionnote.git
+cd fusionnote
+pnpm install
+```
+
+### 2. Setup `.env.local`
+
+```env
+# MongoDB
+MONGODB_URI=your_mongodb_connection
+
+# OpenAI
+OPENAI_API_KEY=your_openai_key
+
+# Supabase (if used)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+
+# Clerk (if used instead)
+CLERK_PUBLISHABLE_KEY=...
+CLERK_SECRET_KEY=...
+```
+
+### 3. Start dev server
+
+```bash
+pnpm dev
+```
+
+---
+
+## 📦 Deploy on Vercel
+
+1. Push to GitHub
+2. Import repo on [vercel.com](https://vercel.com/)
+3. Add environment variables
+4. Click **Deploy**
+
+---
+
+## 🤝 Contributing
+
+This project is designed as a **personal showcase** and learning experience. Contributions are welcome via issues or PRs, especially around improving the editor, AI integration, or UX.
+
+---
+
+## 💼 Why I Built This
+
+> FusionNote is my attempt at building a full-featured real-world SaaS-style application — complete with AI features, authentication, editor tools, and a professional UI. It’s a portfolio project that showcases my skills in full-stack development using modern tools like Next.js, MongoDB, Prisma, Tailwind, and more.
+
+If you're a recruiter or company looking for someone who can build solid, scalable, and beautiful apps — let’s talk!
