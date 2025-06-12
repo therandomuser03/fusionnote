@@ -58,13 +58,13 @@ fusionnote/
 
 ---
 
-⚙️ Getting Started
+## ⚙️ Getting Started
 
 1. Clone the Repository
 
 
 ```bash
-git clone https://github.com/yourusername/fusionnote.git
+git clone https://github.com/therandomuser03/fusionnote.git
 cd fusionnote
 ```
 
@@ -106,10 +106,10 @@ npx prisma generate
 npm run dev
 ```
 
-
+<!-- 
 ---
 
-🛣️ Roadmap
+## 🛣️ Roadmap
 
 [x] Setup authentication (Supabase)
 
@@ -128,12 +128,12 @@ npm run dev
 [ ] Mobile-first UI
 
 [ ] Offline support
-
+-->
 
 
 ---
 
-🧑‍💻 Contributing
+## 🧑‍💻 Contributing
 
 Contributions are welcome! Please fork the repo and submit a pull request.
 
@@ -156,14 +156,14 @@ Contributions are welcome! Please fork the repo and submit a pull request.
 
 ---
 
-📜 License
+## 📜 License
 
 MIT
 
 
 ---
 
-🙌 Acknowledgements
+## 🙌 Acknowledgements
 
 TipTap Editor
 
@@ -181,13 +181,13 @@ Prisma ORM
 
 ---
 
-📬 Contact
+## 📬 Contact
 
 Feel free to connect with me:
 
-GitHub: @yourusername
+GitHub: [@therandomuser03](https://github.com/therandomuser03)
 
-Twitter: @yourhandle
+Twitter: [@TheRandomUser03](https://x.com/TheRandomUser03)
 
 
 
