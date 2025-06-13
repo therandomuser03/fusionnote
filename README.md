@@ -1,3 +1,6 @@
+> ⚠️ *Currently under active development. Contributions, feedback, and stars are always appreciated!*
+---
+
 # 📝 FusionNote
 
 **The collaborative, modern rich-text editor for the web — built for teams, creators, and everyday productivity.**
@@ -7,8 +10,6 @@
 ## 🚀 Overview
 
 FusionNote is a real-time rich text editor built with a sleek, modern UI and robust backend — think of it as a powerful mix of Notion, Google Keep, and your favorite writing tool. Built on a full-stack Next.js setup, FusionNote offers seamless editing, collaboration, and organization.
-
-> ⚠️ *Currently under active development. Contributions, feedback, and stars are always appreciated!*
 
 ---
 
