@@ -5,23 +5,23 @@ import { SimpleEditor } from "./tiptap-templates/simple/simple-editor";
 export default function Editor() {
   return (
     <section className="bg-background">
-    <div className="w-full max-w-6xl mx-auto rounded-xl shadow-lg border border-gray-300 overflow-hidden">
+    <div className="w-full max-w-6xl mx-auto rounded-xl shadow-lg border border-gray-300 dark:border-neutral-700 overflow-hidden">
       {/* Header */}
-      <div className="bg-gray-100 px-4 py-2 flex items-center justify-between border-b border-gray-300">
+      <div className="bg-gray-100 dark:bg-neutral-800 px-4 py-2 flex items-center justify-between border-b border-gray-300 dark:border-neutral-700">
         {/* Traffic lights */}
         <div className="flex space-x-2">
           <span className="w-3 h-3 bg-red-500 rounded-full" />
           <span className="w-3 h-3 bg-yellow-500 rounded-full" />
           <span className="w-3 h-3 bg-green-500 rounded-full" />
         </div>
-        <span className="inline-flex items-baseline text-sm text-gray-500 gap-2">
-          <Lock className="w-3 h-3 text-gray-500" style={{ marginTop: "1px" }} />
+        <span className="inline-flex items-baseline text-sm text-gray-500 dark:text-gray-400 gap-2">
+          <Lock className="w-3 h-3 text-gray-500 dark:text-gray-400" style={{ marginTop: "1px" }} />
           fusionnote.vercel.app
         </span>
         <div className="flex space-x-2 gap-1">
-          <Share className="w-4 h-4 text-gray-500" />
-          <Plus className="w-4 h-4 text-gray-500" />
-          <Copy className="w-4 h-4 text-gray-500" />
+          <Share className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          <Plus className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          <Copy className="w-4 h-4 text-gray-500 dark:text-gray-400" />
         </div>
       </div>
 
