@@ -1,13 +1,11 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import { LineShadowText } from "./magicui/line-shadow-text";
 import { TypingAnimation } from "./magicui/typing-animation";
 import { cn } from "@/lib/utils";
 import { AnimatedShinyText } from "./magicui/animated-shiny-text";
 
 export default function Hero() {
-  const theme = useTheme();
 
   return (
     <div className="bg-background">
@@ -39,10 +37,10 @@ export default function Hero() {
             <div className="mt-10 flex items-center justify-left gap-x-6">
               <div
         className={cn(
-          "group rounded-full border border-black/5 bg-blue-600 text-base text-neutral-100 transition-all ease-in hover:cursor-pointer hover:bg-blue-500 dark:border-white/5 dark:bg-indigo-800 dark:hover:bg-indigo-700",
+          "group rounded-full border border-black/5 bg-blue-600 text-base text-neutral-50 transition-all ease-in hover:cursor-pointer hover:bg-blue-500 dark:border-white/5 dark:bg-indigo-800 dark:hover:bg-indigo-700",
         )}
       >
-        <AnimatedShinyText className="inline-flex items-center justify-center px-4 py-1 transition text-neutral-50 dark:text-neutral-100 ease-out hover:text-neutral-400 hover:duration-300 hover:dark:text-neutral-200">
+        <AnimatedShinyText className="inline-flex items-center justify-center px-4 py-1 transition text-neutral-50 dark:text-neutral-100 ease-out hover:text-neutral-950 hover:duration-300 hover:dark:text-neutral-100">
           <span>Start Writing</span>
         </AnimatedShinyText>
       </div>
@@ -52,7 +50,7 @@ export default function Hero() {
             </div>
           </div>
         </div>
-        {/* <div
+        <div
           aria-hidden="true"
           className="absolute inset-x-0 top-[calc(100%-13rem)] transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
         >
@@ -63,7 +61,7 @@ export default function Hero() {
             }}
             className="relative left-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-288.75"
           />
-        </div> */}
+        </div>
       </div>
     </div>
   );

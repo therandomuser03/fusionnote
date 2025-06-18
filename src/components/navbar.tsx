@@ -38,7 +38,7 @@ export default function Navbar() {
 
       <div className="absolute z-20 flex w-full items-center justify-center gap-8">
         <div className="pt-6">
-            <header className="border-2 border-card relative z-10 flex h-12 w-full items-center justify-between gap-4 rounded-t-2xl bg-neutral-950/80 backdrop-blur-sm px-4 lg:h-auto lg:w-auto lg:justify-start lg:rounded-3xl lg:bg-ln-gray-0 lg:p-[14px] lg:shadow-ln-xs">
+            <header className="border-2 border-neutral-100 dark:border-card relative z-10 flex h-12 w-full items-center justify-between gap-4 rounded-t-2xl bg-white dark:bg-neutral-950/80 backdrop-blur-sm px-4 lg:h-auto lg:w-auto lg:justify-start lg:rounded-3xl lg:bg-ln-gray-0 lg:p-[14px] shadow-lg lg:shadow-ln-xs">
             <div className="flex items-end gap-1">
               <div className="border border-primary p-3 bg-primary rounded-xl flex items-center justify-center">
                 <PenLineIcon className="text-secondary h-4 w-4" />
@@ -51,7 +51,7 @@ export default function Navbar() {
             <NavigationMenu viewport={false}>
               <NavigationMenuList>
                 <NavigationMenuItem className="group relative">
-                  <NavigationMenuTrigger className="bg-transparent text-neutral-300">Features</NavigationMenuTrigger>
+                  <NavigationMenuTrigger>Features</NavigationMenuTrigger>
                   <NavigationMenuContent className="mt-8">
                     <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                       <ListItem href="/docs" title="Real-time Sync">
@@ -81,13 +81,13 @@ export default function Navbar() {
                 <NavigationMenuItem>
                     <NavigationMenuLink
                     asChild
-                    className={`${navigationMenuTriggerStyle()} bg-transparent text-neutral-300`}
+                    className={navigationMenuTriggerStyle()}
                     >
                     <Link href="/pricing">Pricing</Link>
                     </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent text-neutral-300">Templates</NavigationMenuTrigger>
+                  <NavigationMenuTrigger>Templates</NavigationMenuTrigger>
                   <NavigationMenuContent className="mt-8">
                     <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                       <ListItem href="/docs" title="Meeting Notes">
@@ -121,14 +121,14 @@ export default function Navbar() {
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     asChild
-                    className={`${navigationMenuTriggerStyle()} bg-transparent text-neutral-300`}
+                    className={navigationMenuTriggerStyle()}
                   >
                     <Link href="/docs">Docs</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent text-neutral-300">Changelog</NavigationMenuTrigger>
+                  <NavigationMenuTrigger>Changelog</NavigationMenuTrigger>
                   <NavigationMenuContent className="mt-8">
                     <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                       <ListItem href="/docs" title="v1.0 Release">

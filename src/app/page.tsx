@@ -7,7 +7,7 @@ import React from 'react'
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col overflow-y-auto">
+    <div className="flex min-h-screen flex-col overflow-y-auto bg-background">
       <div className="sticky top-0 z-50">
       <Navbar />
       </div>

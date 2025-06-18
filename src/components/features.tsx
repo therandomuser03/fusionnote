@@ -6,6 +6,8 @@ import {
   Palette,
   RefreshCcw,
 } from "lucide-react";
+import { GridPattern } from "./magicui/grid-pattern";
+import { cn } from "@/lib/utils";
 
 const features = [
   {
@@ -40,38 +42,48 @@ const features = [
   },
 ];
 
-
 export const Features = () => {
   return (
-    <section className="py-20 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Everything you need for smart note-taking
-          </h2>
-          <p className="mt-4 text-lg text-gray-400">
-            FusionNote combines powerful features with elegant design.
-          </p>
-        </div>
-        <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="group rounded-xl bg-neutral-900 border border-neutral-800 p-6 transition hover:shadow-md hover:border-purple-500/40"
-            >
-              <div className="flex items-start gap-4">
-                {feature.icon}
-                <h3 className="text-base font-semibold text-white group-hover:text-purple-400 transition">
-                  {feature.title}
-                </h3>
+    <div className="rounded-2xl bg-background relative flex items-center justify-center overflow-hidden p-20">
+      <GridPattern
+        width={20}
+        height={20}
+        x={-1}
+        y={-1}
+        className={cn(
+          "[mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)] ",
+        )}
+      />
+      <section className="max-w-6xl mx-auto">
+        <div className="relative isolate mx-auto px-4 py-32 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+              Everything you need for smart note-taking
+            </h2>
+            <p className="mt-4 text-lg text-gray-400">
+              FusionNote combines powerful features with elegant design.
+            </p>
+          </div>
+          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="group rounded-xl bg-neutral-900 border border-neutral-800 p-6 transition hover:shadow-md hover:border-purple-500/40"
+              >
+                <div className="flex items-start gap-4">
+                  {feature.icon}
+                  <h3 className="text-base font-semibold text-white group-hover:text-purple-400 transition">
+                    {feature.title}
+                  </h3>
+                </div>
+                <p className="mt-2 text-sm text-neutral-400 leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
-              <p className="mt-2 text-sm text-neutral-400 leading-relaxed">
-                {feature.description}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };
