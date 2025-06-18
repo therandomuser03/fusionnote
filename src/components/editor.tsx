@@ -3,6 +3,7 @@ import React from "react";
 import { SimpleEditor } from "./tiptap/tiptap-templates/simple/simple-editor";
 import { Button } from "./ui/button";
 import LoadingCircleSpinner from "./animations/Loading";
+import Link from "next/link";
 
 export default function Editor() {
   return (
@@ -39,7 +40,9 @@ export default function Editor() {
                 <LoadingCircleSpinner />
                 <p className="text-lg font-medium">To try FusionNote</p>
                 <Button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-md transition-colors">
+                  <Link href="#">
                   Log In
+                  </Link>
                 </Button>
               </div>
             </div>
