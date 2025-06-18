@@ -8,7 +8,6 @@ import { AnimatedShinyText } from "./magicui/animated-shiny-text";
 
 export default function Hero() {
   const theme = useTheme();
-  const shadowColor = theme.resolvedTheme === "dark" ? "white" : "black";
 
   return (
     <div className="bg-background">
@@ -29,14 +28,13 @@ export default function Hero() {
           <div className="text-left">
             <h1 className="text-balance text-5xl font-semibold leading-none tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl">
               Fusion
-              <LineShadowText className="italic" shadowColor={shadowColor}>
+              <LineShadowText className="italic">
                 Note
               </LineShadowText>
             </h1>
             <TypingAnimation>Your Ideas, Unified and Brilliant</TypingAnimation>
             <p className="mt-8 max-w-7xl text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">
-              Trusted by thousands of writers, developers, and students. Built
-              for speed, privacy, and powerful collaboration — in your workflow.
+              Built for speed, privacy, and powerful collaboration — in your workflow.
             </p>
             <div className="mt-10 flex items-center justify-left gap-x-6">
               <div

@@ -10,7 +10,7 @@ interface LineShadowTextProps
 
 export function LineShadowText({
   children,
-  shadowColor = "black",
+  shadowColor,
   className,
   as: Component = "span",
   ...props
@@ -22,13 +22,22 @@ export function LineShadowText({
     throw new Error("LineShadowText only accepts string content");
   }
 
+  // Use theme-aware classes instead of CSS variables
+  const shadowClasses = shadowColor 
+    ? "after:bg-[linear-gradient(45deg,transparent_45%,var(--shadow-color)_45%,var(--shadow-color)_55%,transparent_0)]"
+    : "after:bg-[linear-gradient(45deg,transparent_45%,theme(colors.foreground)_45%,theme(colors.foreground)_55%,transparent_0)]";
+
+  const shadowStyles = shadowColor 
+    ? { "--shadow-color": shadowColor } as React.CSSProperties
+    : undefined;
+
   return (
     <MotionComponent
-      style={{ "--shadow-color": shadowColor } as React.CSSProperties}
+      style={shadowStyles}
       className={cn(
         "relative z-0 inline-flex",
         "after:absolute after:left-[0.04em] after:top-[0.04em] after:content-[attr(data-text)]",
-        "after:bg-[linear-gradient(45deg,transparent_45%,var(--shadow-color)_45%,var(--shadow-color)_55%,transparent_0)]",
+        shadowClasses,
         "after:-z-10 after:bg-[length:0.06em_0.06em] after:bg-clip-text after:text-transparent",
         "after:animate-line-shadow",
         className,
