@@ -18,6 +18,7 @@ import {
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import Link from "next/link";
+import { ModeToggle } from "./layout/ThemeToggle";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -35,14 +36,14 @@ export default function Navbar() {
       {/* The Command Dialog itself */}
       <SearchCommand open={open} setOpen={setOpen} />
 
-      <div className="relative z-20 flex w-full items-center justify-center gap-8 bg-neutral-950 bg-opacity-75 backdrop-blur-lg lg:bg-transparent mac:justify-stretch">
+      <div className="absolute z-20 flex w-full items-center justify-center gap-8">
         <div className="pt-6">
-          <header className="border-2 border-neutral-700 relative z-10 flex h-12 w-full items-center justify-between gap-4 rounded-t-2xl bg-neutral-950/70 px-4 lg:h-auto lg:w-auto lg:justify-start lg:rounded-3xl lg:bg-ln-gray-0 lg:p-[14px] lg:shadow-ln-xs">
+            <header className="border-2 border-card relative z-10 flex h-12 w-full items-center justify-between gap-4 rounded-t-2xl bg-neutral-950/80 backdrop-blur-sm px-4 lg:h-auto lg:w-auto lg:justify-start lg:rounded-3xl lg:bg-ln-gray-0 lg:p-[14px] lg:shadow-ln-xs">
             <div className="flex items-end gap-1">
               <div className="border border-primary p-3 bg-primary rounded-xl flex items-center justify-center">
                 <PenLineIcon className="text-secondary h-4 w-4" />
               </div>
-              <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded-md border border-border text-muted-foreground">
+              <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded-md border border-neutral-600 text-neutral-500">
                 v1
               </span>
             </div>
@@ -50,7 +51,7 @@ export default function Navbar() {
             <NavigationMenu viewport={false}>
               <NavigationMenuList>
                 <NavigationMenuItem className="group relative">
-                  <NavigationMenuTrigger>Features</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="bg-transparent text-neutral-300">Features</NavigationMenuTrigger>
                   <NavigationMenuContent className="mt-8">
                     <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                       <ListItem href="/docs" title="Real-time Sync">
@@ -78,15 +79,15 @@ export default function Navbar() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink
+                    <NavigationMenuLink
                     asChild
-                    className={navigationMenuTriggerStyle()}
-                  >
+                    className={`${navigationMenuTriggerStyle()} bg-transparent text-neutral-300`}
+                    >
                     <Link href="/pricing">Pricing</Link>
-                  </NavigationMenuLink>
+                    </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>Templates</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="bg-transparent text-neutral-300">Templates</NavigationMenuTrigger>
                   <NavigationMenuContent className="mt-8">
                     <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                       <ListItem href="/docs" title="Meeting Notes">
@@ -120,14 +121,14 @@ export default function Navbar() {
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     asChild
-                    className={navigationMenuTriggerStyle()}
+                    className={`${navigationMenuTriggerStyle()} bg-transparent text-neutral-300`}
                   >
                     <Link href="/docs">Docs</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>Changelog</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="bg-transparent text-neutral-300">Changelog</NavigationMenuTrigger>
                   <NavigationMenuContent className="mt-8">
                     <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                       <ListItem href="/docs" title="v1.0 Release">
@@ -159,7 +160,7 @@ export default function Navbar() {
               variant="ghost"
               className="flex items-center space-x-2 rounded-md border px-3 py-1 min-w-60 text-sm shadow-sm"
             >
-              <span className="inline-flex gap-2">
+              <span className="inline-flex gap-2 text-muted-foreground">
                 <Search className="h-5 w-5" /> Search...
               </span>
               <span className="ml-auto">
@@ -168,6 +169,7 @@ export default function Navbar() {
                 </kbd>
               </span>
             </Button>
+            <ModeToggle />
             <Button variant="outline">Log In</Button>
           </header>
         </div>

@@ -102,16 +102,35 @@ export function TypingAnimation({
   }, [children, duration, loop, reverse, pauseBeforeDelete, pauseBeforeRestart, started]);
 
   return (
-  <MotionComponent
-    ref={elementRef}
-    className={cn(
-      "relative h-[5rem] w-full overflow-hidden text-4xl font-bold tracking-[-0.02em]",
-      className
-    )}
-    {...props}
-  >
-    <span className="block min-h-[5rem] w-full">{displayedText}</span>
-  </MotionComponent>
+  <>
+    <style>
+      {`
+        @keyframes fadeInOut {
+          0%, 100% { opacity: 0; }
+          50% { opacity: 1; }
+        }
+
+        .fade-blink {
+          animation: fadeInOut 0.7s ease-in-out infinite;
+        }
+      `}
+    </style>
+
+    <MotionComponent
+      ref={elementRef}
+      className={cn(
+        "relative h-[5rem] w-full overflow-hidden text-4xl font-bold tracking-[-0.02em]",
+        className
+      )}
+      {...props}
+    >
+      <span className="block min-h-[5rem] w-full">
+        {displayedText}
+        <span className="inline-block fade-blink text-primary">|</span>
+      </span>
+    </MotionComponent>
+  </>
 );
+
 
 }
