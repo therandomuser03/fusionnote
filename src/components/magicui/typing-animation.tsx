@@ -9,12 +9,8 @@ interface TypingAnimationProps extends MotionProps {
   className?: string;
   duration?: number;
   delay?: number;
-  pauseBeforeDelete?: number;
-  pauseBeforeRestart?: number;
   as?: React.ElementType;
   startOnView?: boolean;
-  loop?: boolean;
-  reverse?: boolean;
 }
 
 export function TypingAnimation({
@@ -22,39 +18,42 @@ export function TypingAnimation({
   className,
   duration = 100,
   delay = 0,
-  pauseBeforeDelete = 1500,
-  pauseBeforeRestart = 1000,
   as: Component = "div",
   startOnView = false,
-  loop = false,
-  reverse = false,
   ...props
 }: TypingAnimationProps) {
   const MotionComponent = motion.create(Component, {
     forwardMotionProps: true,
   });
 
-  const [displayedText, setDisplayedText] = useState("");
+  const [displayedText, setDisplayedText] = useState<string>("");
   const [started, setStarted] = useState(false);
   const elementRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!startOnView) {
-      const startTimeout = setTimeout(() => setStarted(true), delay);
+      const startTimeout = setTimeout(() => {
+        setStarted(true);
+      }, delay);
       return () => clearTimeout(startTimeout);
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setTimeout(() => setStarted(true), delay);
+          setTimeout(() => {
+            setStarted(true);
+          }, delay);
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
-    if (elementRef.current) observer.observe(elementRef.current);
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
     return () => observer.disconnect();
   }, [delay, startOnView]);
 
@@ -62,75 +61,33 @@ export function TypingAnimation({
     if (!started) return;
 
     let i = 0;
-    let isDeleting = false;
-
-    const type = () => {
-      if (!isDeleting && i <= children.length) {
-        setDisplayedText(children.substring(0, i));
+    const typingEffect = setInterval(() => {
+      if (i < children.length) {
+        setDisplayedText(children.substring(0, i + 1));
         i++;
-        if (i > children.length && reverse && loop) {
-          setTimeout(() => {
-            isDeleting = true;
-            type();
-          }, pauseBeforeDelete);
-          return;
-        }
-      } else if (isDeleting && i >= 0) {
-        setDisplayedText(children.substring(0, i));
-        i--;
-        if (i < 0 && loop) {
-          isDeleting = false;
-          setTimeout(() => {
-            type();
-          }, pauseBeforeRestart);
-          return;
-        }
+      } else {
+        clearInterval(typingEffect);
       }
+    }, duration);
 
-      if (i <= children.length && i >= 0) {
-        setTimeout(type, duration);
-      }
-    };
-
-    type();
-
-    // Cleanup
     return () => {
-      i = 0;
-      isDeleting = false;
+      clearInterval(typingEffect);
     };
-  }, [children, duration, loop, reverse, pauseBeforeDelete, pauseBeforeRestart, started]);
+  }, [children, duration, started]);
 
   return (
-  <>
-    <style>
-      {`
-        @keyframes fadeInOut {
-          0%, 100% { opacity: 0; }
-          50% { opacity: 1; }
-        }
-
-        .fade-blink {
-          animation: fadeInOut 0.7s ease-in-out infinite;
-        }
-      `}
-    </style>
-
     <MotionComponent
       ref={elementRef}
       className={cn(
-        "relative h-[5rem] w-full overflow-hidden text-4xl font-bold tracking-[-0.02em]",
-        className
+        "text-4xl font-bold leading-[5rem] tracking-[-0.02em]",
+        className,
       )}
       {...props}
     >
-      <span className="block min-h-[5rem] w-full">
-        {displayedText}
-        <span className="inline-block fade-blink text-primary">|</span>
+      {displayedText}
+      <span className={cn("animate-blink", { "opacity-0": !started })}>
+        {displayedText.length >= children.length ? "." : "|"}
       </span>
     </MotionComponent>
-  </>
-);
-
-
+  );
 }

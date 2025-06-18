@@ -6,8 +6,8 @@ import * as React from "react"
 import { Button } from "../ui/button"
 
 // --- Icons ---
-import { MoonStarIcon } from "@/components/tiptap-icons/moon-star-icon"
-import { SunIcon } from "@/components/tiptap-icons/sun-icon"
+import { MoonStarIcon } from "@/components/tiptap/tiptap-icons/moon-star-icon"
+import { SunIcon } from "@/components/tiptap/tiptap-icons/sun-icon"
 
 export function ModeToggle() {
   const [isDarkMode, setIsDarkMode] = React.useState<boolean>(false)

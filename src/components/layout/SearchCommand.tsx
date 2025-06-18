@@ -25,7 +25,7 @@ export default function SearchCommand({ open, setOpen }: Props) {
 
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [setOpen])
+  }, [setOpen, open])
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>

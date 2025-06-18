@@ -1,6 +1,6 @@
 import { Copy, Lock, Plus, Share } from "lucide-react";
 import React from "react";
-import { SimpleEditor } from "./tiptap-templates/simple/simple-editor";
+import { SimpleEditor } from "./tiptap/tiptap-templates/simple/simple-editor";
 
 export default function Editor() {
   return (
