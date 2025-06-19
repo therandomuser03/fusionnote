@@ -39,7 +39,7 @@ export default function Editor() {
               <div className="flex flex-col items-center justify-center h-full space-y-4">
                 <LoadingCircleSpinner />
                 <p className="text-lg font-medium">To try FusionNote</p>
-                <Button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-md transition-colors">
+                <Button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-indigo-800 dark:hover:bg-indigo-700 text-white font-medium rounded-md shadow-md transition-colors">
                   <Link href="#">
                   Log In
                   </Link>

@@ -11,32 +11,32 @@ import { cn } from "@/lib/utils";
 
 const features = [
   {
-    icon: <ImageIcon className="h-8 w-8 text-purple-400" />,
+    icon: <ImageIcon className="h-8 w-8 text-blue-600 dark:text-indigo-800" />,
     title: "Image Support",
     description: "Add and organize visuals effortlessly within your notes.",
   },
   {
-    icon: <Share2 className="h-8 w-8 text-purple-400" />,
+    icon: <Share2 className="h-8 w-8 text-blue-600 dark:text-indigo-800" />,
     title: "Export & Share",
     description: "Easily share or export your notes to multiple platforms.",
   },
   {
-    icon: <Code className="h-8 w-8 text-purple-400" />,
+    icon: <Code className="h-8 w-8 text-blue-600 dark:text-indigo-800" />,
     title: "Effortless Markdown",
     description: "Write with speed and structure using Markdown support.",
   },
   {
-    icon: <Lock className="h-8 w-8 text-purple-400" />,
+    icon: <Lock className="h-8 w-8 text-blue-600 dark:text-indigo-800" />,
     title: "Private & Secure",
     description: "Keep your notes encrypted and accessible only to you.",
   },
   {
-    icon: <Palette className="h-8 w-8 text-purple-400" />,
+    icon: <Palette className="h-8 w-8 text-blue-600 dark:text-indigo-800" />,
     title: "Customizable Themes",
     description: "Personalize your workspace with elegant themes.",
   },
   {
-    icon: <RefreshCcw className="h-8 w-8 text-purple-400" />,
+    icon: <RefreshCcw className="h-8 w-8 text-blue-600 dark:text-indigo-800" />,
     title: "Cloud Sync",
     description: "Access your notes from anywhere, automatically synced.",
   },
@@ -68,15 +68,15 @@ export const Features = () => {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="group rounded-xl bg-neutral-900 border border-neutral-800 p-6 transition hover:shadow-md hover:border-purple-500/40"
+                className="group rounded-xl bg-neutral-300 dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 p-6 transition hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700"
               >
                 <div className="flex items-start gap-4">
                   {feature.icon}
-                  <h3 className="text-base font-semibold text-white group-hover:text-purple-400 transition">
+                  <h3 className="text-base font-semibold text-primary group-hover:text-indigo-600 transition">
                     {feature.title}
                   </h3>
                 </div>
-                <p className="mt-2 text-sm text-neutral-400 leading-relaxed">
+                <p className="mt-2 text-sm text-primary/70 leading-relaxed">
                   {feature.description}
                 </p>
               </div>
