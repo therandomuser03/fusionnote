@@ -2,11 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import SearchCommand from "./layout/SearchCommand";
-import {
-  Command,
-  PenLineIcon,
-  Search,
-} from "lucide-react";
+import { Command, PenLineIcon, Search } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   NavigationMenu,
@@ -38,7 +34,7 @@ export default function Navbar() {
 
       <div className="absolute z-20 flex w-full items-center justify-center gap-8">
         <div className="pt-6">
-            <header className="border-2 border-neutral-100 dark:border-card relative z-10 flex h-12 w-full items-center justify-between gap-4 rounded-t-2xl bg-white dark:bg-neutral-950/80 backdrop-blur-sm px-4 lg:h-auto lg:w-auto lg:justify-start lg:rounded-3xl lg:bg-ln-gray-0 lg:p-[14px] shadow-lg lg:shadow-ln-xs">
+          <header className="border-2 border-neutral-100 dark:border-card relative z-10 flex h-12 w-full items-center justify-between gap-4 rounded-t-2xl bg-white dark:bg-neutral-950/80 backdrop-blur-sm px-4 lg:h-auto lg:w-auto lg:justify-start lg:rounded-3xl lg:bg-ln-gray-0 lg:p-[14px] shadow-lg lg:shadow-ln-xs">
             <div className="flex items-end gap-1">
               <div className="border border-primary p-3 bg-primary rounded-xl flex items-center justify-center">
                 <PenLineIcon className="text-secondary h-4 w-4" />
@@ -79,12 +75,12 @@ export default function Navbar() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <NavigationMenuLink
+                  <NavigationMenuLink
                     asChild
                     className={navigationMenuTriggerStyle()}
-                    >
+                  >
                     <Link href="/pricing">Pricing</Link>
-                    </NavigationMenuLink>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Templates</NavigationMenuTrigger>
@@ -170,7 +166,9 @@ export default function Navbar() {
               </span>
             </Button>
             <ModeToggle />
-            <Button variant="outline">Log In</Button>
+            <Button variant="outline">
+              <Link href={"/login"}>Log In</Link>
+            </Button>
           </header>
         </div>
       </div>

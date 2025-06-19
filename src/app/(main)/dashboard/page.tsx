@@ -1,7 +1,12 @@
+import AppHeader from '@/components/layout/AppHeader'
+import AppNavbar from '@/components/layout/AppNavbar'
 import React from 'react'
 
 export default function Dashboard() {
   return (
-    <div>Dashboard</div>
+    <div>
+      <AppNavbar />
+      <AppHeader />
+    </div>
   )
 }

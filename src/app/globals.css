@@ -172,6 +172,16 @@
   animation: fadeDown 1.5s ease-out;
 }
 
+.text-outline {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: oklch(92.758% 0.00592 264.656 / 0.7); /* Tailwind gray-200 */
+}
+
+.dark .text-outline {
+  -webkit-text-stroke-color: oklch(87.168% 0.00944 258.479 / 0.1); /* Tailwind gray-300/10 */
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

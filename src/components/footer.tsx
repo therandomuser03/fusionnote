@@ -1,22 +1,20 @@
-// import Link from "next/link";
-
+// components/Footer.tsx
 export const Footer = () => {
   return (
-    <footer className="border-t border-white/10 py-8 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="relative border-t border-primary/10 py-16 pb-32 bg-background overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <p className="text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} FusionNote. All Rights Reserved.
+            &copy; {new Date().getFullYear()} FusionNote. All rights reserved.
           </p>
-          {/* <div className="flex gap-4">
-            <Link href="#" className="text-sm text-gray-400 hover:text-white">
-              Terms
-            </Link>
-            <Link href="#" className="text-sm text-gray-400 hover:text-white">
-              Privacy
-            </Link>
-          </div> */}
         </div>
+      </div>
+
+      {/* Outlined Background Text */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+        <h1 className="text-[15rem] font-bold lowercase select-none text-outline text-transparent dark:text-gray-300/10">
+          FusionNote
+        </h1>
       </div>
     </footer>
   );
