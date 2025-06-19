@@ -1,7 +1,10 @@
+// src/app/(main)/layout.tsx
 import React from 'react'
 
-export default function layout() {
+export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>layout</div>
+      <div>
+        {children}
+      </div>
   )
 }

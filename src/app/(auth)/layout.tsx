@@ -1,10 +1,10 @@
+// src/app/(auth)/layout.tsx
 import React from 'react'
-import Login from './login/page'
 
-export default function Auth() {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-    <Login />
-    </>
+      <div>
+        {children}
+      </div>
   )
 }

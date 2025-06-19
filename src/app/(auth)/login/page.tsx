@@ -1,6 +1,6 @@
-import { PencilLine } from "lucide-react"
-import { LoginForm } from "@/components/auth/LoginForm"
-import Image from "next/image"
+import { PencilLine } from "lucide-react";
+import { LoginForm } from "@/components/auth/LoginForm";
+import Image from "next/image";
 
 export default function Login() {
   return (
@@ -22,11 +22,12 @@ export default function Login() {
       </div>
       <div className="bg-muted relative hidden lg:block">
         <Image
-          src="/placeholder.svg"
+          src="/login.png"
           alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          fill
+          className="absolute inset-0 object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>
     </div>
-  )
+  );
 }
