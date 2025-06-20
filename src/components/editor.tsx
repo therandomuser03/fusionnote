@@ -1,6 +1,6 @@
 import { Copy, Lock, Plus, Share } from "lucide-react";
 import React from "react";
-import { SimpleEditor } from "./tiptap/tiptap-templates/simple/simple-editor";
+import { SimpleEditor2 } from "./tiptap/tiptap-templates/simple/simple-editor2";
 import { Button } from "./ui/button";
 import LoadingCircleSpinner from "./animations/Loading";
 import Link from "next/link";
@@ -32,7 +32,7 @@ export default function Editor() {
         </div>
 
         {/* Body */}
-        <div className="bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white">
+        <div className="bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white pointer-none:">
           <div className="relative">
             {/* Overlay with fade-in-down effect */}
             <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/90 to-white dark:from-neutral-950/80 dark:via-neutral-950/90 dark:to-neutral-950 backdrop-blur-xxs z-10 fade-down">
@@ -48,7 +48,7 @@ export default function Editor() {
             </div>
 
             {/* Editor content below overlay */}
-            <SimpleEditor />
+            <SimpleEditor2 />
           </div>
         </div>
       </div>
