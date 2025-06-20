@@ -148,7 +148,7 @@ export default function AppContent() {
               key={note.id}
               className="w-full max-w-sm overflow-hidden rounded-lg shadow"
             >
-              <CardHeader className="relative h-40 p-0">
+              <CardHeader className="relative h-36 p-0 overflow-hidden">
                 {note.image ? (
                   <Image
                     src={note.image}
@@ -158,13 +158,10 @@ export default function AppContent() {
                     className="rounded-t-lg"
                   />
                 ) : (
-                  <div className="relative h-full w-full flex items-center justify-center bg-gray-100 overflow-hidden">
-                    <div className="absolute inset-0 flex items-center justify-center text-3xl font-bold text-black/30 blur-2xl scale-150">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-4xl font-bold text-primary/30 blur-sm scale-150 text-center px-4">
                       {note.title}
-                    </div>
-                    <div className="z-10 absolute text-white font-semibold text-xl drop-shadow-md">
-                      {note.title}
-                    </div>
+                    </span>
                   </div>
                 )}
               </CardHeader>
