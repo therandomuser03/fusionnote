@@ -41,7 +41,7 @@ export default function AppNavbar() {
       <SearchCommand open={open} setOpen={setOpen} />
 
       <div className="absolute z-20 flex w-full items-center justify-center gap-8">
-        <div className="pt-6">
+        <div>
           <header className="border-2 border-neutral-100 dark:border-card relative z-10 flex h-12 w-full min-w-6xl items-center justify-between gap-4 rounded-t-2xl bg-white dark:bg-neutral-950/80 backdrop-blur-sm px-4 lg:h-auto lg:w-auto lg:rounded-3xl lg:bg-ln-gray-0 lg:p-[14px] shadow-lg lg:shadow-ln-xs">
             {/* lg:justify-start */}
             <div className="flex items-end gap-1">
