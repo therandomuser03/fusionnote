@@ -23,7 +23,7 @@ datasource db {
 
 // Enum for user roles within a workspace or for general permissions.
 // This allows for granular control over what a user can do.
-enum WorkspaceRole {
+enum workspaceRole {
   OWNER    // Full control over the workspace, including deletion and member management.
   ADMIN    // Can manage members and notes within the workspace, but not delete the workspace.
   EDITOR   // Can create, edit, and delete notes within the workspace.
@@ -32,7 +32,7 @@ enum WorkspaceRole {
 
 // Enum for permissions on individual notes, separate from workspace roles.
 // This is useful for sharing specific notes outside of a workspace.
-enum NotePermissionLevel {
+enum notePermissionLevel {
   VIEWER // Can only read the note.
   EDITOR // Can read and modify the note.
 }
@@ -42,7 +42,7 @@ enum NotePermissionLevel {
 // This includes standard authentication fields (especially for NextAuth.js)
 // and relationships to notes, workspaces, and other user-specific data.
 // =====================================================================
-model User {
+model users {
   id               String            @id @default(auto()) @map("_id") @db.ObjectId // MongoDB's primary key
   email            String            @unique // User's email, must be unique
   name             String? // User's display name, optional
@@ -53,23 +53,23 @@ model User {
   updatedAt        DateTime          @updatedAt // Timestamp of the last update to the user record
 
   // Relationships
-  accounts         Account[] // Relates to authentication accounts (for NextAuth.js)
-  sessions         Session[] // Relates to user sessions (for NextAuth.js)
-  notes            Note[] // Notes created/owned by this user
-  workspaces       WorkspaceMember[] // Workspaces this user is a member of
-  favoriteNotes    UserFavoriteNote[] // Notes favorited by this user
-  noteVersions     NoteVersion[] @relation("NoteVersionChangedBy") // Note versions changed by this user
-  comments         Comment[] // Comments made by this user
-  sharedNotePermissions NotePermission[] // Permissions granted to this user on individual notes
+  accounts         account[] // Relates to authentication accounts (for NextAuth.js)
+  sessions         session[] // Relates to user sessions (for NextAuth.js)
+  notes            notes[] // Notes created/owned by this user
+  workspaces       workspaceMember[] // Workspaces this user is a member of
+  favoriteNotes    userFavoriteNote[] // Notes favorited by this user
+  noteVersions     noteVersion[] @relation("noteVersionChangedBy") // Note versions changed by this user
+  comments         comment[] // Comments made by this user
+  sharedNotePermissions notePermission[] // Permissions granted to this user on individual notes
 
-  Workspace Workspace[]
+  Workspace workspace[]
 }
 
 // =====================================================================
 // Account Model: Used by NextAuth.js to link users to their
 // OAuth accounts (e.g., Google, GitHub) or credential providers.
 // =====================================================================
-model Account {
+model account {
   id                 String  @id @default(auto()) @map("_id") @db.ObjectId
   userId             String  @db.ObjectId // Foreign key to the User model
   type               String // e.g., "oauth", "credentials", "email"
@@ -83,7 +83,7 @@ model Account {
   id_token           String? // ID token from OAuth provider
   session_state      String? // OAuth session state
 
-  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade) // Establishes relation to User
+  user               users    @relation(fields: [userId], references: [id], onDelete: Cascade) // Establishes relation to User
 
   @@unique([provider, providerAccountId]) // Ensures unique combination of provider and account ID
 }
@@ -91,20 +91,20 @@ model Account {
 // =====================================================================
 // Session Model: Used by NextAuth.js to manage user sessions.
 // =====================================================================
-model Session {
+model session {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique // Unique token for the session
   userId       String   @db.ObjectId // Foreign key to the User model
   expires      DateTime // Expiration date of the session
 
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Establishes relation to User
+  user         users     @relation(fields: [userId], references: [id], onDelete: Cascade) // Establishes relation to User
 }
 
 // =====================================================================
 // VerificationToken Model: Used by NextAuth.js for email verification
 // or password reset flows.
 // =====================================================================
-model VerificationToken {
+model verificationToken {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String   @unique
@@ -117,16 +117,16 @@ model VerificationToken {
 // Workspace Model: Represents a collaborative space where users can
 // organize and share notes.
 // =====================================================================
-model Workspace {
+model workspace {
   id          String            @id @default(auto()) @map("_id") @db.ObjectId
   name        String // Name of the workspace
   description String? // Optional description for the workspace
   ownerId     String            @db.ObjectId // The user who owns this workspace
 
   // Relationships
-  owner       User              @relation(fields: [ownerId], references: [id]) // Owner of the workspace
-  members     WorkspaceMember[] // Members associated with this workspace
-  notes       Note[]            @relation("WorkspaceNotes") // Notes belonging to this workspace
+  owner       users              @relation(fields: [ownerId], references: [id]) // Owner of the workspace
+  members     workspaceMember[] // Members associated with this workspace
+  notes       notes[]            @relation("workspaceNotes") // Notes belonging to this workspace
 
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
@@ -136,15 +136,15 @@ model Workspace {
 // WorkspaceMember Model: A join table to manage the many-to-many relationship
 // between Users and Workspaces, including their specific roles within that workspace.
 // =====================================================================
-model WorkspaceMember {
+model workspaceMember {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
   userId      String        @db.ObjectId // Foreign key to User
   workspaceId String        @db.ObjectId // Foreign key to Workspace
-  role        WorkspaceRole // Role of the user in this workspace (OWNER, ADMIN, EDITOR, VIEWER)
+  role        workspaceRole // Role of the user in this workspace (OWNER, ADMIN, EDITOR, VIEWER)
 
   // Relationships
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        users          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -156,7 +156,7 @@ model WorkspaceMember {
 // Note Model: The core content unit. Designed to hold rich text content
 // from TipTap and manage various organizational and collaborative features.
 // =====================================================================
-model Note {
+model notes {
   id              String             @id @default(auto()) @map("_id") @db.ObjectId
   title           String // Title of the note
   // TipTap content can be stored as a String (HTML) or Json (ProseMirror JSON).
@@ -175,20 +175,20 @@ model Note {
   updatedAt       DateTime           @updatedAt
 
   // Relationships
-  owner           User               @relation(fields: [ownerId], references: [id])
-  workspace       Workspace?         @relation("WorkspaceNotes", fields: [workspaceId], references: [id]) // Optional relationship to a workspace
-  noteTags        NoteTag[]          // Explicit many-to-many relationship with tags
-  versions        NoteVersion[]      @relation("NoteVersions") // Version history of this note
-  comments        Comment[]          @relation("NoteComments") // Comments on this note
-  favoritedBy     UserFavoriteNote[] // Users who have favorited this note
-  permissions     NotePermission[]   // Specific permissions for users on this note (granular sharing)
+  owner           users               @relation(fields: [ownerId], references: [id])
+  workspace       workspace?         @relation("workspaceNotes", fields: [workspaceId], references: [id]) // Optional relationship to a workspace
+  noteTags        noteTag[]          // Explicit many-to-many relationship with tags
+  versions        noteVersion[]      @relation("noteVersions") // Version history of this note
+  comments        comment[]          @relation("noteComments") // Comments on this note
+  favoritedBy     userFavoriteNote[] // Users who have favorited this note
+  permissions     notePermission[]   // Specific permissions for users on this note (granular sharing)
 }
 
 // =====================================================================
 // NoteVersion Model: Stores snapshots of a note's content for version history.
 // This is crucial for collaborative editing and recovery.
 // =====================================================================
-model NoteVersion {
+model noteVersion {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   noteId       String   @db.ObjectId // Foreign key to the Note
   content      String // Snapshot of the note's content at this version
@@ -198,8 +198,8 @@ model NoteVersion {
   createdAt    DateTime @default(now()) // Timestamp when this version was created
 
   // Relationships
-  note         Note     @relation("NoteVersions", fields: [noteId], references: [id], onDelete: Cascade)
-  changedBy    User     @relation("NoteVersionChangedBy", fields: [changedById], references: [id])
+  note         notes     @relation("noteVersions", fields: [noteId], references: [id], onDelete: Cascade)
+  changedBy    users     @relation("noteVersionChangedBy", fields: [changedById], references: [id])
 
   @@unique([noteId, versionNumber]) // Ensures unique version number for each note
 }
@@ -207,7 +207,7 @@ model NoteVersion {
 // =====================================================================
 // Tag Model: For organizing notes with keywords.
 // =====================================================================
-model Tag {
+model tags {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String   @unique // Unique name for the tag (e.g., "Work", "Ideas", "Personal")
 
@@ -215,19 +215,19 @@ model Tag {
   updatedAt DateTime @updatedAt
 
   // Relationships
-  noteTags  NoteTag[] // Explicit many-to-many relationship with notes
+  noteTags  noteTag[] // Explicit many-to-many relationship with notes
 }
 
 // =====================================================================
 // NoteTag Model: Join table for many-to-many relationship between Notes and Tags
 // =====================================================================
-model NoteTag {
+model noteTag {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   noteId    String   @db.ObjectId
   tagId     String   @db.ObjectId
   
-  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
-  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  note      notes     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag       tags      @relation(fields: [tagId], references: [id], onDelete: Cascade)
   
   createdAt DateTime @default(now())
 
@@ -238,7 +238,7 @@ model NoteTag {
 // Comment Model: For adding comments to notes.
 // Supports threaded comments via parentId.
 // =====================================================================
-model Comment {
+model comment {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   noteId    String    @db.ObjectId // Foreign key to the Note
   authorId  String    @db.ObjectId // Foreign key to the User who made the comment
@@ -249,28 +249,28 @@ model Comment {
   updatedAt DateTime  @updatedAt
 
   // Relationships
-  note      Note      @relation("NoteComments", fields: [noteId], references: [id], onDelete: Cascade)
-  author    User      @relation(fields: [authorId], references: [id])
-  parent    Comment?  @relation("ChildrenComments", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children  Comment[] @relation("ChildrenComments")
+  note      notes      @relation("noteComments", fields: [noteId], references: [id], onDelete: Cascade)
+  author    users      @relation(fields: [authorId], references: [id])
+  parent    comment?  @relation("childrenComments", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children  comment[] @relation("childrenComments")
 }
 
 // =====================================================================
 // NotePermission Model: For granular sharing of individual notes with specific users,
 // outside of or in addition to workspace permissions.
 // =====================================================================
-model NotePermission {
+model notePermission {
   id              String              @id @default(auto()) @map("_id") @db.ObjectId
   noteId          String              @db.ObjectId // Foreign key to the Note
   userId          String              @db.ObjectId // Foreign key to the User being granted permission
-  permissionLevel NotePermissionLevel // The level of access (VIEWER, EDITOR)
+  permissionLevel notePermissionLevel // The level of access (VIEWER, EDITOR)
 
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
 
   // Relationships
-  note            Note                @relation(fields: [noteId], references: [id], onDelete: Cascade)
-  user            User                @relation(fields: [userId], references: [id])
+  note            notes                @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  user            users                @relation(fields: [userId], references: [id])
 
   @@unique([noteId, userId]) // Ensures a user can only have one permission level per note
 }
@@ -279,7 +279,7 @@ model NotePermission {
 // UserFavoriteNote Model: An explicit join table for users to favorite notes.
 // Allows for potential future metadata like 'favoritedAt'.
 // =====================================================================
-model UserFavoriteNote {
+model userFavoriteNote {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId // Foreign key to the User
   noteId    String   @db.ObjectId // Foreign key to the Note
@@ -287,8 +287,8 @@ model UserFavoriteNote {
   createdAt DateTime @default(now())
 
   // Relationships
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  user      users     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note      notes     @relation(fields: [noteId], references: [id], onDelete: Cascade)
 
   @@unique([userId, noteId]) // Ensures a user can only favorite a note once
 }
