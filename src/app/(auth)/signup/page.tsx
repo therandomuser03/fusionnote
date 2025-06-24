@@ -1,9 +1,33 @@
+'use client';
+
 import { PencilLine } from "lucide-react";
 import { SignupForm } from "@/components/auth/SignupForm";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import axios from 'axios';
+import { useState } from "react";
 
 export default function Signup() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = async (userData: { email: string; password: string; username: string }) => {
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/users/signup", userData);
+      console.log("Sign up success", response.data);
+      toast.success("Account created successfully!");
+      router.push('/login');
+    } catch (error: any) {
+      console.log("Sign up failed");
+      toast.error(error.response?.data?.message || error.message || "Signup failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="grid bg-background min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -17,7 +41,7 @@ export default function Signup() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <SignupForm />
+            <SignupForm onSignup={handleSignup} loading={loading} />
           </div>
         </div>
       </div>
