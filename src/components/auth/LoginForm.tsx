@@ -1,14 +1,50 @@
+'use client';
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useEffect, useState } from "react"
+import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+
+interface LoginFormProps extends React.ComponentProps<"form"> {
+  onLogin: (userData: { email: string; password: string }) => void;
+  loading?: boolean;
+}
 
 export function LoginForm({
   className,
+  onLogin,
+  loading = false,
   ...props
-}: React.ComponentProps<"form">) {
+}: LoginFormProps) {
+
+  const [user, setUser] = useState({
+    email: "",
+    password: ""
+  })
+
+  const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!buttonDisabled && !loading) {
+      onLogin(user);
+    }
+  };
+
+  useEffect(() => {
+    if (user.email.length > 0 && user.password.length > 0) {
+      setButtonDisabled(false)
+    } else {
+      setButtonDisabled(true)
+    }
+  }, [user])
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-muted-foreground text-sm text-balance">
@@ -18,7 +54,15 @@ export function LoginForm({
       <div className="grid gap-6">
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="email@example.com" required />
+          <Input 
+            id="email" 
+            value={user.email} 
+            onChange={(e) => setUser({...user, email: e.target.value})} 
+            type="email" 
+            placeholder="email@example.com" 
+            required 
+            disabled={loading}
+          />
         </div>
         <div className="grid gap-3">
           <div className="flex items-center">
@@ -30,11 +74,37 @@ export function LoginForm({
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" required />
+          <div className="relative">
+            <Input 
+              id="password" 
+              value={user.password} 
+              onChange={(e) => setUser({...user, password: e.target.value})} 
+              type={showPassword ? "text" : "password"} 
+              required 
+              disabled={loading}
+            />
+            <Button 
+              type="button" 
+              variant="ghost" 
+              size="sm" 
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0" 
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={loading}
+            >
+              {showPassword ? (
+                <Eye className="h-4 w-4" />
+              ) : (
+                <EyeOff className="h-4 w-4" />
+              )}
+              <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+            </Button>
         </div>
-        <Button type="submit" className="w-full">
-          Login
+        </div>
+        
+        <Button type="submit" className="w-full" disabled={buttonDisabled || loading}>
+          {loading ? "Logging into your account..." : buttonDisabled ? "Enter your credentials" : "Login"}
         </Button>
+
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
             Or continue with
@@ -73,7 +143,7 @@ export function LoginForm({
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <a href="#" className="underline underline-offset-4">
+        <a href="/signup" className="underline underline-offset-4">
           Sign up
         </a>
       </div>

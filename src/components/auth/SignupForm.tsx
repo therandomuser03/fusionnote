@@ -60,7 +60,7 @@ export function SignupForm({
             value={user.email} 
             onChange={(e) => setUser({...user, email: e.target.value})} 
             type="email" 
-            placeholder="m@example.com" 
+            placeholder="email@example.com" 
             required 
             disabled={loading}
           />
