@@ -23,17 +23,44 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { toast } from "sonner";
 
 export default function AppNavbar() {
   const [open, setOpen] = useState(false);
-
   const [isMac, setIsMac] = useState(false);
+  const [userEmail, setUserEmail] = useState<string>("");
+
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       setIsMac(navigator.platform.toUpperCase().includes("MAC"));
     }
+
+    const fetchUser = async () => {
+      try {
+        const res = await axios.post("/api/users/profile");
+        setUserEmail(res.data.data.email);
+      } catch (error) {
+        console.error("Failed to fetch user email:", error);
+      }
+    };
+
+    fetchUser();
   }, []);
+
+  const logout = async () => {
+    try {
+      await axios.get("api/users/logout");
+      toast.success("Logout Success");
+      router.push("/login");
+    } catch (error: any) {
+      console.log(error.message);
+      toast.error(error.message);
+    }
+  };
 
   return (
     <>
@@ -73,7 +100,6 @@ export default function AppNavbar() {
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
                     <AvatarImage
-                      src="https://github.com/shadcn.png"
                       alt="@shadcn"
                     />
                     <AvatarFallback>CN</AvatarFallback>
@@ -85,7 +111,7 @@ export default function AppNavbar() {
                   sideOffset={4}
                 >
                   <DropdownMenuLabel className="p-2 font-medium">
-                    My Account
+                    {userEmail || "Loading..."}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
@@ -103,8 +129,8 @@ export default function AppNavbar() {
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-red-600">
-                    <LogOut className="mr-2 h-4 w-4 text-red-600" />
+                  <DropdownMenuItem variant="destructive" onClick={logout}>
+                    <LogOut className="mr-2 h-4 w-4" />
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
