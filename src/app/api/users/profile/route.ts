@@ -19,8 +19,9 @@ export async function POST(request: NextRequest) {
       message: "User Found",
       data: {
         _id: user._id,
-        username: user.username, // ✅ username included
-        email: user.email        // Optional: include other fields
+        name: user.name,
+        username: user.username,
+        email: user.email
       },
     });
   } catch (err) {

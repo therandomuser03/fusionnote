@@ -26,11 +26,13 @@ import {
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function AppNavbar() {
   const [open, setOpen] = useState(false);
   const [isMac, setIsMac] = useState(false);
   const [userEmail, setUserEmail] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
 
   const router = useRouter();
 
@@ -43,8 +45,10 @@ export default function AppNavbar() {
       try {
         const res = await axios.post("/api/users/profile");
         setUserEmail(res.data.data.email);
+        setUserName(res.data.data.name);
       } catch (error) {
         console.error("Failed to fetch user email:", error);
+        console.error("Failed to fetch user name:", error);
       }
     };
 
@@ -56,9 +60,14 @@ export default function AppNavbar() {
       await axios.get("api/users/logout");
       toast.success("Logout Success");
       router.push("/login");
-    } catch (error: any) {
-      console.log(error.message);
-      toast.error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error.message);
+        toast.error(error.message);
+      } else {
+        console.log("An unexpected error occurred during logout.");
+        toast.error("An unexpected error occurred.");
+      }
     }
   };
 
@@ -99,9 +108,7 @@ export default function AppNavbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
-                    <AvatarImage
-                      alt="@shadcn"
-                    />
+                    <AvatarImage alt="@shadcn" />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
@@ -111,14 +118,18 @@ export default function AppNavbar() {
                   sideOffset={4}
                 >
                   <DropdownMenuLabel className="p-2 font-medium">
+                    {userName || "Loading..."}
+                    <br />
                     {userEmail || "Loading..."}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                      <UserCircle className="mr-2 h-4 w-4" />
-                      Account
-                    </DropdownMenuItem>
+                    <Link href="/profile">
+                      <DropdownMenuItem>
+                        <UserCircle className="mr-2 h-4 w-4" />
+                        Account
+                      </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuItem>
                       <CreditCard className="mr-2 h-4 w-4" />
                       Billing

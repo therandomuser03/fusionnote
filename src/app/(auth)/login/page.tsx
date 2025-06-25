@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { PencilLine } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import axios from 'axios';
+import axios from "axios";
 import { useState } from "react";
 
 export default function Login() {
@@ -19,10 +19,19 @@ export default function Login() {
       const response = await axios.post("/api/users/login", userData);
       console.log("Login success", response.data);
       toast.success("Logged into account successfully!");
-      router.push('/dashboard');
-    } catch (error: any) {
+      router.push("/dashboard");
+    } catch (error: unknown) {
       console.log("Log in failed");
-      toast.error(error.response?.data?.message || error.message || "Login failed");
+
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || error.message || "Login failed"
+        );
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }

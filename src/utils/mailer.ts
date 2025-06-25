@@ -1,32 +1,26 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 import User from "@/models/userModel";
 import bcryptjs from "bcryptjs";
-import nodemailer from "nodemailer";
-import { Resend } from 'resend';
+// import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const sendEmail = async ({ email, emailType, userId }: any) => {
+interface SendEmailParams {
+  email: string;
+  emailType: "VERIFY" | "RESET";
+  userId: string;
+}
+
+export const sendEmail = async ({
+  email,
+  emailType,
+  userId,
+}: SendEmailParams) => {
   try {
     const hashedToken = await bcryptjs.hash(userId.toString(), 10);
-    
-    // if (emailType === "VERIFY") {
 
-    //   const updatedUser = await User.findByIdAndUpdate(userId, {
-    //     $set: {
-    //     verifyToken: hashedToken,
-    //     verifyTokenExpiry: new Date (Date.now() + 3600000)
-    // }});
-    // console.log("Updated User for VERIFY", updatedUser)
-
-    // } else if (emailType === "RESET") {
-    //   await User.findByIdAndUpdate(userId, {
-    //     $set: {
-    //     forgotPasswordToken: hashedToken,
-    //     forgotPasswordTokenExpiry: new Date(Date.now() + 3600000)
-    //   }});
-    // }
     if (emailType === "VERIFY") {
       await User.findByIdAndUpdate(userId, {
         $set: {
@@ -43,59 +37,44 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
       });
     }
 
-    // console.log("Outside if-else");
-
-    // Looking to send emails in production? Check out our Email API/SMTP product!
-    
-    // var transport = nodemailer.createTransport({
-    //   host: "sandbox.smtp.mailtrap.io",
-    //   port: 2525,
-    //   auth: {
-    //     user: process.env.MAILER_USER,
-    //     pass: process.env.MAILER_PASS,
-    //   },
-    // });
-
-    const templatePath = path.join(process.cwd(), 'src', 'utils', 'emailTemplates', 'verifyOrResetEmail.html');
-    let template = fs.readFileSync(templatePath, 'utf-8');
+    const templatePath = path.join(
+      process.cwd(),
+      "src",
+      "utils",
+      "emailTemplates",
+      "verifyOrResetEmail.html"
+    );
+    let template = fs.readFileSync(templatePath, "utf-8");
 
     const link = `${process.env.DOMAIN}/verifyemail?token=${hashedToken}`;
     const replacements: Record<string, string> = {
-      '{{heading}}': emailType === "VERIFY" ? "Email Verification" : "Password Reset",
-      '{{actionText}}': emailType === "VERIFY" ? "verify your email" : "reset your password",
-      '{{buttonText}}': emailType === "VERIFY" ? "Verify Email" : "Reset Password",
-      '{{link}}': link,
+      "{{heading}}":
+        emailType === "VERIFY" ? "Email Verification" : "Password Reset",
+      "{{actionText}}":
+        emailType === "VERIFY" ? "verify your email" : "reset your password",
+      "{{buttonText}}":
+        emailType === "VERIFY" ? "Verify Email" : "Reset Password",
+      "{{link}}": link,
     };
 
     // Replace all placeholders
     for (const key in replacements) {
-      template = template.replace(new RegExp(key, 'g'), replacements[key]);
+      template = template.replace(new RegExp(key, "g"), replacements[key]);
     }
 
-  //   const mailOptions = {
-  //     from: 'Anubhab',
-  //     to: email,
-  //     subject: replacements['{{heading}}'],
-  //     html: template,
-  //   };
-
-  //   const mailResponse = await transport.sendMail(mailOptions);
-  //   return mailResponse;
-  // } catch (error: any) {
-  //   throw new Error(error.message);
-  // }
-const emailResponse = await resend.emails.send({
-      from: 'FusionNote <onboarding@resend.dev>',
+    const emailResponse = await resend.emails.send({
+      from: "FusionNote <onboarding@resend.dev>",
       to: email,
-      subject: replacements['{{heading}}'],
+      subject: replacements["{{heading}}"],
       html: template,
     });
 
-    // const mailResponse = await transport.sendMail(mailOptions);
-    // return mailResponse;
-    console.log("Resend response:", emailResponse); // ✅ Add this
-    // return emailResponse;
-  } catch (error: any) {
-    throw new Error(error.message);
+    console.log("Resend response:", emailResponse);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("An unexpected error occurred.");
+    }
   }
 };

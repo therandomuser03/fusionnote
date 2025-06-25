@@ -5,7 +5,6 @@ import "@/styles/_variables.scss";
 import AppNavbar from "@/components/layout/AppNavbar";
 import {
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,

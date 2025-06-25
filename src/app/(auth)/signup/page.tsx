@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { PencilLine } from "lucide-react";
 import { SignupForm } from "@/components/auth/SignupForm";
@@ -6,14 +6,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import axios from 'axios';
+import axios from "axios";
 import { useState } from "react";
 
 export default function Signup() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const handleSignup = async (userData: { email: string; password: string; username: string }) => {
+  const handleSignup = async (userData: {
+    email: string;
+    password: string;
+    username: string;
+  }) => {
     try {
       setLoading(true);
       const response = await axios.post("/api/users/signup", userData);
@@ -22,10 +26,18 @@ export default function Signup() {
       setTimeout(() => {
         toast.success("Check your email for verification");
       }, 1000);
-      router.push('/login');
-    } catch (error: any) {
+      router.push("/login");
+    } catch (error: unknown) {
       console.log("Sign up failed");
-      toast.error(error.response?.data?.message || error.message || "Signup failed");
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || error.message || "Signup failed"
+        );
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }

@@ -46,6 +46,7 @@ model users {
   id               String            @id @default(auto()) @map("_id") @db.ObjectId // MongoDB's primary key
   email            String            @unique // User's email, must be unique
   name             String? // User's display name, optional
+  username         String?  @unique 
   image            String? // URL for user's profile picture, optional
   emailVerified    DateTime? // Timestamp when the email was verified
   passwordHash     String? // Hashed password for credential-based login, optional
