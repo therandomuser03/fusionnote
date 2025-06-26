@@ -2,10 +2,10 @@ import fs from "fs";
 import path from "path";
 import User from "@/models/userModel";
 import bcryptjs from "bcryptjs";
-// import nodemailer from "nodemailer";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
+// import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface SendEmailParams {
   email: string;
@@ -62,14 +62,26 @@ export const sendEmail = async ({
       template = template.replace(new RegExp(key, "g"), replacements[key]);
     }
 
-    const emailResponse = await resend.emails.send({
-      from: "FusionNote <onboarding@resend.dev>",
-      to: email,
-      subject: replacements["{{heading}}"],
-      html: template,
+    // Create a Nodemailer transporter using your Gmail SMTP
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_EMAIL, // Your Gmail address (teamfusionnote@gmail.com)
+        pass: process.env.GMAIL_APP_PASSWORD, // Your generated App Password
+      },
     });
 
-    console.log("Resend response:", emailResponse);
+    const mailOptions = {
+      from: `FusionNote <${process.env.GMAIL_EMAIL}>`, // The 'from' address will be your Gmail
+      to: email, // The recipient's email
+      subject: replacements["{{heading}}"], //
+      html: template, //
+    };
+
+    const emailResponse = await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully via Nodemailer:", emailResponse);
+    // --- End Nodemailer implementation ---
+    
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error(error.message);
