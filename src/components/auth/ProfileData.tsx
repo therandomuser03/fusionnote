@@ -104,9 +104,9 @@ export default function ProfileData() {
               Username
             </label>
             <div className="flex items-center rounded-md border border-input bg-background px-3 py-2 focus-within:ring-2 focus-within:ring-ring">
-              <span className="text-muted-foreground select-none">
+              {/* <span className="text-muted-foreground select-none">
                 fusionnote.vercel.app/
-              </span>
+              </span> */}
               <input
                 type="text"
                 id="username"

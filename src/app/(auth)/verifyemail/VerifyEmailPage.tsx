@@ -4,7 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, PencilLine } from "lucide-react";
 
 export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
@@ -44,6 +44,14 @@ export default function VerifyEmailPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-900 px-4">
+
+      <div className="absolute top-1/5 flex items-center gap-3">
+        <div className="bg-primary text-primary-foreground flex size-10 items-center justify-center rounded-md">
+          <PencilLine className="size-6" />
+        </div>
+        <span className="font-medium text-2xl">FusionNote</span>
+      </div>
+
       <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-md p-8 max-w-md w-full text-center border dark:border-neutral-700">
         {loading && (
           <>
