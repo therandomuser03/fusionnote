@@ -1,5 +1,5 @@
 import React from "react";
-import { SimpleEditor } from "@/components/tiptap/tiptap-templates/simple/simple-editor";
+import { SimpleEditor } from "@/components/tiptap-main/tiptap-templates/simple/simple-editor";
 import "@/styles/_keyframe-animations.scss";
 import "@/styles/_variables.scss";
 import AppNavbar from "@/components/layout/AppNavbar";
@@ -15,16 +15,14 @@ import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import AppFooter from "@/components/layout/AppFooter";
 
 export default function Create() {
   return (
-    <div>
-      <div className="sticky z-50">
-        <div className="mx-auto items-center justify-center pt-2 max-w-6xl">
+    <div className="min-h-screen flex flex-col overflow-auto bg-background">
+      {/* Sticky Navbar */}
+      <div className="sticky top-0 z-50 bg-background">
+        <div className="mx-auto items-center justify-center py-3 max-w-6xl">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -32,28 +30,30 @@ export default function Create() {
                   <Link href="/">Home</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
+
               <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1">
-                    Toggle menu
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    <DropdownMenuItem>Documentation</DropdownMenuItem>
-                    <DropdownMenuItem>Themes</DropdownMenuItem>
-                    <DropdownMenuItem>GitHub</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
+
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="/docs/components">Components</Link>
+                  <Link href="/dashboard">Dashboard</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
+
               <BreadcrumbSeparator />
+
               <BreadcrumbItem>
-                <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+                <BreadcrumbLink asChild>
+                  <Link href="/notes">Notes</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+
+              <BreadcrumbSeparator />
+
+              <BreadcrumbItem>
+                <DropdownMenu>
+                  <BreadcrumbPage>Create Note</BreadcrumbPage>
+                  <DropdownMenuContent align="start"></DropdownMenuContent>
+                </DropdownMenu>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -61,21 +61,14 @@ export default function Create() {
         <AppNavbar />
       </div>
 
-      <div className="mx-auto items-center justify-center pt-38 py-12 max-w-6xl">
-        <input
-          type="text"
-          placeholder="Title"
-          className="border-none focus:outline-none text-4xl w-full pl-2"
-        />
-      </div>
+      {/* Page Content */}
+      <main className="flex-1 w-full px-4 max-w-6xl mx-auto py-8 mt-16">
 
-      <div className="flex-grow mx-auto items-center justify-center border border-accent rounded-xl max-w-6xl">
-        <SimpleEditor />
-      </div>
+        <div className="border border-accent rounded-xl">
+          <SimpleEditor />
+        </div>
+      </main>
 
-      {/* <div className="bg-neutral-950">
-      <AppFooter />
-      </div> */}
     </div>
   );
 }

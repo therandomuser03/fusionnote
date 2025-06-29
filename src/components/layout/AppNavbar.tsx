@@ -27,6 +27,15 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
 import Link from "next/link";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "../ui/navigation-menu";
 
 export default function AppNavbar() {
   const [open, setOpen] = useState(false);
@@ -78,18 +87,53 @@ export default function AppNavbar() {
 
       <div className="absolute z-20 flex w-full items-center justify-center gap-8">
         <div>
-          <header className="border-2 border-neutral-100 dark:border-card relative z-10 flex h-12 w-full min-w-6xl items-center justify-between gap-4 rounded-t-2xl bg-white dark:bg-neutral-950/80 backdrop-blur-sm px-4 lg:h-auto lg:w-auto lg:rounded-3xl lg:bg-ln-gray-0 lg:p-[14px] shadow-lg lg:shadow-ln-xs">
+          <header className="border-2 border-neutral-100 dark:border-card relative z-10 flex h-12 w-full min-w-6xl items-center justify-baseline gap-4 rounded-t-2xl bg-white dark:bg-neutral-950/80 backdrop-blur-sm px-4 lg:h-auto lg:w-auto lg:rounded-3xl lg:bg-ln-gray-0 lg:p-[14px] shadow-lg lg:shadow-ln-xs">
             {/* lg:justify-start */}
-            <div className="flex items-end gap-1">
-              <div className="border border-primary p-3 bg-primary rounded-xl flex items-center justify-center">
-                <PenLineIcon className="text-secondary h-4 w-4" />
+            <Link href="/">
+              <div className="flex items-end gap-1">
+                <div className="border border-primary p-3 bg-primary rounded-xl flex items-center justify-center">
+                  <PenLineIcon className="text-secondary h-4 w-4" />
+                </div>
+                <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded-md border border-neutral-600 text-neutral-500">
+                  v1
+                </span>
               </div>
-              <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded-md border border-neutral-600 text-neutral-500">
-                v1
-              </span>
+            </Link>
+
+            <div className="inline-flex">
+              <NavigationMenu viewport={false}>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      asChild
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      <Link href="/dashboard">Dashboard</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      asChild
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      <Link href="/notes">Notes</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      asChild
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      <Link href="/tags">Tags</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center ml-auto">
               <Button
                 onClick={() => setOpen(true)}
                 variant="ghost"
@@ -151,5 +195,25 @@ export default function AppNavbar() {
         </div>
       </div>
     </>
+  );
+}
+
+function ListItem({
+  title,
+  children,
+  href,
+  ...props
+}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
+  return (
+    <li {...props}>
+      <NavigationMenuLink asChild>
+        <Link href={href}>
+          <div className="text-sm leading-none font-medium">{title}</div>
+          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
+            {children}
+          </p>
+        </Link>
+      </NavigationMenuLink>
+    </li>
   );
 }

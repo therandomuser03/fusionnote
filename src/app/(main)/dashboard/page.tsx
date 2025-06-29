@@ -15,9 +15,11 @@ import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import PinnedNotes from "@/components/layout/PinnedNotes";
+import RecentNotes from "@/components/layout/RecentNotes";
+import TopTags from "@/components/layout/TopTags";
+import RecentlyDeleted from "@/components/layout/RecentlyDeleted";
 
 export default function Dashboard() {
   return (
@@ -33,28 +35,12 @@ export default function Dashboard() {
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
-              {/* <BreadcrumbItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1">
-                    Toggle menu
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    <DropdownMenuItem>Documentation</DropdownMenuItem>
-                    <DropdownMenuItem>Themes</DropdownMenuItem>
-                    <DropdownMenuItem>GitHub</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator /> */}
+
               <BreadcrumbItem>
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1">
                     <BreadcrumbPage>Dashboard</BreadcrumbPage>
-                  </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">
-                    <DropdownMenuItem>Notes</DropdownMenuItem>
-                    {/* <DropdownMenuItem>Themes</DropdownMenuItem> */}
-                    {/* <DropdownMenuItem>GitHub</DropdownMenuItem> */}
+                    
                   </DropdownMenuContent>
                 </DropdownMenu>
               </BreadcrumbItem>
@@ -66,9 +52,25 @@ export default function Dashboard() {
 
       <AppHeader />
 
-      {/* Main content should grow to fill space */}
       <div className="flex-grow pt-16 pb-16">
+        <PinnedNotes />
+      </div>
+
+      {/* Main content should grow to fill space */}
+      {/* <div className="flex-grow pt-16 pb-16">
         <AppContent />
+      </div> */}
+
+      <div className="flex-grow pt-16 pb-16">
+        <RecentNotes />
+      </div>
+
+      <div className="flex-grow pt-16 pb-16">
+        <TopTags />
+      </div>
+
+      <div className="flex-grow pt-16 pb-16">
+        <RecentlyDeleted />
       </div>
 
       {/* Footer always at bottom */}
