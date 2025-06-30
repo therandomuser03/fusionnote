@@ -192,8 +192,8 @@ export function SimpleEditor() {
     "main" | "highlighter" | "link"
   >("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
-  const saveTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-  const [isSaving, setIsSaving] = React.useState(false);
+  // const saveTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  // const [isSaving, setIsSaving] = React.useState(false);
   const [title, setTitle] = React.useState("Untitled Note");
   const params = useParams();
   const [noteId, setNoteId] = React.useState<string | null>(null);

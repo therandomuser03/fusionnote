@@ -26,7 +26,7 @@ export const SaveNoteButton = React.forwardRef< // Use React.forwardRef
     ref
   ) => {
     const handleClick = React.useCallback(
-      (e: React.MouseEvent<HTMLButtonElement>) => {
+      (_e: React.MouseEvent<HTMLButtonElement>) => {
         if (disabled) return;
         toast.promise(onClick(), {
           loading: "Saving...",

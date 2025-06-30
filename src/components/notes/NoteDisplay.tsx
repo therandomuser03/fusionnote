@@ -6,10 +6,19 @@ import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
 import { useEffect } from "react";
 
+interface JSONContent {
+  type: string;
+  attrs?: Record<string, any>;
+  content?: JSONContent[];
+  marks?: { type: string; attrs?: Record<string, any> }[];
+  text?: string;
+}
+
 interface NoteDisplayProps {
   title: string;
-  content: any;
+  content: JSONContent;
 }
+
 
 export default function NoteDisplay({ title, content }: NoteDisplayProps) {
   // Console logs are good for debugging, you can remove them after confirming

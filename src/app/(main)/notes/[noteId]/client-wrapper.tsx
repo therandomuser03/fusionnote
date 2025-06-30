@@ -1,6 +1,7 @@
-'use client';
-import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+"use client";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { JSONContent } from "@/types/tiptap";
 
 const EditorLoading = () => (
   <div className="max-w-3xl mx-auto p-8">
@@ -11,13 +12,16 @@ const EditorLoading = () => (
   </div>
 );
 
-const NoteDisplay = dynamic(() => import('@/components/notes/NoteDisplay'), {
+const NoteDisplay = dynamic(() => import("@/components/notes/NoteDisplay"), {
   ssr: false,
   loading: () => <EditorLoading />,
 });
 
 export default function NoteClientPage({ noteId }: { noteId: string }) {
-  const [note, setNote] = useState<{ title: string; content: any } | null>(null);
+  const [note, setNote] = useState<{
+    title: string;
+    content: JSONContent;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -31,24 +35,30 @@ export default function NoteClientPage({ noteId }: { noteId: string }) {
         const data = await res.json();
 
         if (!res.ok) {
-          throw new Error(data.error || 'Failed to fetch the note.');
+          throw new Error(data.error || "Failed to fetch the note.");
         }
 
         if (!data || !data.content) {
-          throw new Error('Invalid note data received from the server.');
+          throw new Error("Invalid note data received from the server.");
         }
 
-        const parsedContent = typeof data.content === 'string'
-          ? JSON.parse(data.content)
-          : data.content;
+        const parsedContent =
+          typeof data.content === "string"
+            ? JSON.parse(data.content)
+            : data.content;
 
         setNote({
-          title: data.title || 'Untitled',
+          title: data.title || "Untitled",
           content: parsedContent,
         });
-      } catch (err: any) {
-        console.error('❌ Fetch or parsing failed:', err);
-        setError(err.message || 'An unknown error occurred.');
+      } catch (err: unknown) {
+        console.error("❌ Fetch or parsing failed:", err);
+
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred.");
+        }
       }
     };
 

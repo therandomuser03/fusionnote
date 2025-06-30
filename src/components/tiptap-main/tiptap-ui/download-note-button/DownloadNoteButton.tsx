@@ -25,7 +25,7 @@ export const DownloadNoteButton = React.forwardRef< // Use React.forwardRef
     ref
   ) => {
     const handleClick = React.useCallback(
-      (e: React.MouseEvent<HTMLButtonElement>) => {
+      (_e: React.MouseEvent<HTMLButtonElement>) => {
         if (disabled) return;
         onClick();
       },

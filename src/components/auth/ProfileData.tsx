@@ -27,9 +27,9 @@ export default function ProfileData() {
   const [image, setImage] = useState<string | null>(null);
   // `imageFile` is for the *currently selected file* for upload.
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [, setIsUploading] = useState(false);
   // `previewUrl` is for displaying either the existing `image` or the locally selected `imageFile`.
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [, setPreviewUrl] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -79,55 +79,55 @@ export default function ProfileData() {
 
 
   // --- Handle Image File Selection and Upload ---
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setImageFile(file); // Store the file for local preview (via useEffect)
+  // const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     setImageFile(file); // Store the file for local preview (via useEffect)
 
-      setIsUploading(true);
+  //     setIsUploading(true);
       
-      const formData = new FormData();
-      formData.append('file', file);
+  //     const formData = new FormData();
+  //     formData.append('file', file);
 
-      try {
-        const res = await fetch("/api/users/upload-image", { // Keep your chosen path
-          method: "POST",
-          body: formData,
-        });
-        const json = await res.json();
+  //     try {
+  //       const res = await fetch("/api/users/upload-image", { // Keep your chosen path
+  //         method: "POST",
+  //         body: formData,
+  //       });
+  //       const json = await res.json();
 
-        if (!res.ok) {
-            // If upload fails, revert to previous image or null
-            setPreviewUrl(image);
-            setImageFile(null); // Clear selected file
-            throw new Error(json.message || "Failed to upload image");
-        }
+  //       if (!res.ok) {
+  //           // If upload fails, revert to previous image or null
+  //           setPreviewUrl(image);
+  //           setImageFile(null); // Clear selected file
+  //           throw new Error(json.message || "Failed to upload image");
+  //       }
 
-        setImage(json.imageUrl); // This is the KEY: Update the `image` state with the Cloudinary URL
-        toast.success("Profile photo uploaded successfully! Click Save to apply.");
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          toast.error(err.message || "Image upload failed");
-        } else {
-          toast.error("An unknown error occurred during upload.");
-        }
-      } finally {
-        setIsUploading(false);
-        // Clear the file input value after upload attempt to allow re-uploading the same file
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-      }
-    }
-  };
+  //       setImage(json.imageUrl); // This is the KEY: Update the `image` state with the Cloudinary URL
+  //       toast.success("Profile photo uploaded successfully! Click Save to apply.");
+  //     } catch (err: unknown) {
+  //       if (err instanceof Error) {
+  //         toast.error(err.message || "Image upload failed");
+  //       } else {
+  //         toast.error("An unknown error occurred during upload.");
+  //       }
+  //     } finally {
+  //       setIsUploading(false);
+  //       // Clear the file input value after upload attempt to allow re-uploading the same file
+  //       if (fileInputRef.current) {
+  //           fileInputRef.current.value = '';
+  //       }
+  //     }
+  //   }
+  // };
 
-  // --- Handle Remove Image ---
-  const handleRemoveImage = () => {
-    setImage(null); // Clear the persisted image URL
-    setImageFile(null); // Clear any locally selected file
-    setPreviewUrl(null); // Clear the preview
-    toast.info("Profile photo cleared. Click Save to apply.");
-  };
+  // // --- Handle Remove Image ---
+  // const handleRemoveImage = () => {
+  //   setImage(null); // Clear the persisted image URL
+  //   setImageFile(null); // Clear any locally selected file
+  //   setPreviewUrl(null); // Clear the preview
+  //   toast.info("Profile photo cleared. Click Save to apply.");
+  // };
 
   // --- Handle Save Profile Data ---
 const handleSave = async () => {

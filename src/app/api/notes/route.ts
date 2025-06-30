@@ -25,9 +25,10 @@ export async function POST(req: NextRequest) {
 
     console.log("✅ Note created:", note._id);
     return NextResponse.json(note);
-  } catch (err: any) {
-    console.error('❌ POST /api/notes failed:', err.message);
-    return NextResponse.json({ error: err.message || 'Failed to create note' }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to create note';
+    console.error('❌ POST /api/notes failed:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -57,9 +58,10 @@ export async function PUT(req: NextRequest) {
 
     console.log("✅ Note updated:", updatedNote._id);
     return NextResponse.json(updatedNote);
-  } catch (err: any) {
-    console.error('❌ PUT /api/notes failed:', err.message);
-    return NextResponse.json({ error: err.message || 'Failed to update note' }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to update note';
+    console.error('❌ PUT /api/notes failed:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -72,8 +74,9 @@ export async function GET(req: NextRequest) {
 
     console.log("📤 GET notes:", notes.length);
     return NextResponse.json(notes);
-  } catch (err: any) {
-    console.error('❌ GET /api/notes failed:', err.message);
-    return NextResponse.json({ error: err.message || 'Failed to fetch notes' }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to fetch notes';
+    console.error('❌ GET /api/notes failed:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

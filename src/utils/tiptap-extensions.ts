@@ -1,7 +1,9 @@
-export function tiptapJsonToPlainText(json: any): string {
+import { JSONContent } from '@tiptap/react';
+
+export function tiptapJsonToPlainText(json: JSONContent): string {
   if (!json || typeof json !== 'object') return '';
 
-  const extractText = (node: any): string => {
+  const extractText = (node: JSONContent): string => {
     if (node.type === 'text') return node.text || '';
     if (!node.content) return '';
     return node.content.map(extractText).join(' ');

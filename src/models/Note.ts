@@ -1,9 +1,10 @@
 // models/Note.ts
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
+import { JSONContent } from '@tiptap/react'; // ✅ Import TipTap content type
 
 export interface INote extends Document {
   title: string;
-  content: Record<string, any>;
+  content: JSONContent; // ✅ Strongly typed content
   ownerId: mongoose.Types.ObjectId;
 }
 

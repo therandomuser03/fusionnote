@@ -1,19 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { connect } from '@/lib/db';
-import Note from '@/models/Note'; // Still using Mongoose Note model
+import Note from '@/models/Note';
 import { getDataFromToken } from '@/utils/auth';
 
-// Define the type for the context object, which includes params
 interface GetNoteContext {
   params: {
-    id: string; // The 'id' will be available in params
+    id: string;
   };
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     await connect();
-    const userId = getDataFromToken(req as any);
+    const userId = getDataFromToken(req);
 
     const { title, content } = await req.json();
 
@@ -24,21 +23,18 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(note);
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: 'Failed to create note' }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to create note';
+    console.error('❌ POST error:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
-// Corrected PUT handler
-export async function PUT(req: Request, context: GetNoteContext) {
+export async function PUT(req: NextRequest, context: GetNoteContext) {
   try {
     await connect();
-    const userId = getDataFromToken(req as any);
-
-    // 💡 THE FIX: Await context.params
-    const params = await context.params;
-    const { id } = params;
+    const userId = getDataFromToken(req);
+    const { id } = context.params;
 
     const { title, content } = await req.json();
 
@@ -57,37 +53,33 @@ export async function PUT(req: Request, context: GetNoteContext) {
     }
 
     return NextResponse.json(updatedNote);
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: 'Failed to update note' }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to update note';
+    console.error('❌ PUT error:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
-// Corrected GET handler
-export async function GET(req: Request, context: GetNoteContext) { // Add context parameter
+export async function GET(req: NextRequest, context: GetNoteContext) {
   try {
     await connect();
-    const userId = getDataFromToken(req as any);
-
-    // 💡 THE FIX: Await context.params
-    const params = await context.params;
-    const { id } = params;
+    const userId = getDataFromToken(req);
+    const { id } = context.params;
 
     if (!id) {
-      // This case should ideally not be hit if the route is correctly matched
       return NextResponse.json({ error: 'Note ID is required in the path' }, { status: 400 });
     }
 
     const note = await Note.findOne({ _id: id, ownerId: userId });
 
     if (!note) {
-      // This correctly returns a 404 if the note is not found
       return NextResponse.json({ error: 'Note not found or unauthorized' }, { status: 404 });
     }
 
     return NextResponse.json(note);
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: 'Failed to fetch note' }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to fetch note';
+    console.error('❌ GET error:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

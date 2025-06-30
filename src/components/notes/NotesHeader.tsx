@@ -7,7 +7,7 @@ import Link from "next/link";
 import axios from "axios";
 
 export default function NotesHeader() {
-  const [data, setData] = useState<{ _id?: string; username?: string }>({});
+  const [, setData] = useState<{ _id?: string; username?: string }>({});
 
   useEffect(() => {
     const fetchUser = async () => {

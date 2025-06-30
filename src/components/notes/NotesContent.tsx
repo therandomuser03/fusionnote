@@ -28,14 +28,18 @@ type Note = {
   id: string;
   title: string;
   description: string;
-  image?: string;
+  image?: string | null;
+};
+
+type RawNote = {
+  _id: string;
+  title: string;
+  content: string | Record<string, unknown>; // You could replace this with TipTap JSONContent
+  image?: string | null;
 };
 
 export default function NotesContent() {
   const [notes, setNotes] = useState<Note[]>([]);
-  const stripHtml = (html: string) => {
-    return html.replace(/<[^>]*>/g, "").slice(0, 140);
-  };
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -45,10 +49,10 @@ export default function NotesContent() {
 
         if (!res.ok) throw new Error(data.error || "Failed to fetch notes");
 
-        const transformed = data.map((note: any) => ({
+        const transformed = (data as RawNote[]).map((note) => ({
           id: note._id,
           title: note.title,
-          description: tiptapJsonToPlainText(note.content), // you can improve this
+          description: tiptapJsonToPlainText(note.content),
           image: note.image || null,
         }));
 
@@ -69,6 +73,7 @@ export default function NotesContent() {
             My Notes
           </h3>
           <div className="flex gap-5">
+            {/* Sort Dropdown */}
             <div className="inline-flex gap-2 items-center align-middle">
               Sort By:{" "}
               <Select>
@@ -82,20 +87,15 @@ export default function NotesContent() {
                     <SelectItem value="title z-a">Title (Z-A)</SelectItem>
                     <SelectItem value="last modified">Last Modified</SelectItem>
                     <SelectItem value="created date">Created Date</SelectItem>
-                    <SelectItem value="priority high-low">
-                      Priority (High → Low)
-                    </SelectItem>
-                    <SelectItem value="priority low-high">
-                      Priority (Low → High)
-                    </SelectItem>
-                    <SelectItem value="custom order">
-                      Custom Order (drag-and-drop style)
-                    </SelectItem>
+                    <SelectItem value="priority high-low">Priority (High → Low)</SelectItem>
+                    <SelectItem value="priority low-high">Priority (Low → High)</SelectItem>
+                    <SelectItem value="custom order">Custom Order</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
 
+            {/* Filter Dropdown */}
             <div className="inline-flex gap-2 items-center align-middle">
               Filter:{" "}
               <Select>
@@ -107,19 +107,16 @@ export default function NotesContent() {
                     <SelectLabel>Filter</SelectLabel>
                     <SelectItem value="categories">Categories</SelectItem>
                     <SelectItem value="date range">Date Range</SelectItem>
-                    <SelectItem value="attachments">
-                      Has Attachments (Yes/No)
-                    </SelectItem>
+                    <SelectItem value="attachments">Has Attachments</SelectItem>
                     <SelectItem value="favourited">Favourited Only</SelectItem>
-                    <SelectItem value="shared with me">
-                      Shared With Me
-                    </SelectItem>
+                    <SelectItem value="shared with me">Shared With Me</SelectItem>
                     <SelectItem value="by author">By Author</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
 
+            {/* View Dropdown */}
             <div className="inline-flex gap-2 items-center align-middle">
               View:{" "}
               <Select>
@@ -140,13 +137,11 @@ export default function NotesContent() {
         </div>
       </div>
 
+      {/* Notes Grid */}
       <div className="z-20 w-full flex items-center justify-center gap-8">
         <div className="w-6xl inline-grid grid-cols-3 gap-4 py-12">
           {notes.map((note) => (
-            <Card
-              key={note.id}
-              className="w-full max-w-sm overflow-hidden rounded-lg shadow"
-            >
+            <Card key={note.id} className="w-full max-w-sm overflow-hidden rounded-lg shadow">
               <CardHeader className="relative h-36 p-0 overflow-hidden">
                 {note.image ? (
                   <Image
