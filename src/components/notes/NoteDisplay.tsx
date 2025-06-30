@@ -8,9 +8,9 @@ import { useEffect } from "react";
 
 interface JSONContent {
   type: string;
-  attrs?: Record<string, any>;
+  attrs?: Record<string, unknown>;
   content?: JSONContent[];
-  marks?: { type: string; attrs?: Record<string, any> }[];
+  marks?: { type: string; attrs?: Record<string, unknown> }[];
   text?: string;
 }
 

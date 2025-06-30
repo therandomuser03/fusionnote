@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
@@ -26,12 +26,9 @@ export default function ProfileData() {
   // `image` stores the *persisted* Cloudinary URL from the database or after successful save.
   const [image, setImage] = useState<string | null>(null);
   // `imageFile` is for the *currently selected file* for upload.
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [, setIsUploading] = useState(false);
+  const [imageFile] = useState<File | null>(null);
   // `previewUrl` is for displaying either the existing `image` or the locally selected `imageFile`.
   const [, setPreviewUrl] = useState<string | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // AlertDialog state
   const [openDialog, setOpenDialog] = useState(false);
