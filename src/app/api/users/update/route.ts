@@ -16,18 +16,22 @@ export async function PUT(request: NextRequest) {
       name: string;
       username: string;
       email: string;
-      image: string;
+      image: string | null;
       password: string;
     }> = {};
 
     if (name) updateData.name = name;
     if (username) updateData.username = username;
     if (email) updateData.email = email;
-    if (image) updateData.image = image;
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       updateData.password = hashedPassword;
     }
+
+    if (image !== undefined) {
+      updateData.image = image;
+    }
+
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,

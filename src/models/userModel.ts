@@ -1,3 +1,4 @@
+// userModel.ts
 import mongoose from "mongoose";
 
 
@@ -28,6 +29,10 @@ const userSchema = new mongoose.Schema({
 	isAdmin: {
         type: Boolean,
         default: false
+    },
+    image: { // <-- ADD THIS FIELD!
+        type: String,
+        default: null // It's good practice to set a default, like null or an empty string
     },
     forgotPasswordToken: String,
     forgotPasswordTokenExpiry: Date,

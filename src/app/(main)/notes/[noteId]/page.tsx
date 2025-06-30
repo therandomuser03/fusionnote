@@ -9,7 +9,7 @@ import React from 'react'
 
 export default async function Page({ params }: { params: { noteId: string } }) {
 
-  const awaitedParams = await params;
+  // const awaitedParams = await params;
   return (
     <div className="min-h-screen flex flex-col">
       {/* Sticky top navbar */}
@@ -57,7 +57,8 @@ export default async function Page({ params }: { params: { noteId: string } }) {
 
       {/* Main content should grow to fill space */}
       <div className="flex-grow pt-16 pb-16">
-        <NoteClientPage noteId={awaitedParams.noteId} />
+        {/* <NoteClientPage noteId={awaitedParams.noteId} /> */}
+        <NoteClientPage noteId={params.noteId} />
       </div>
 
       {/* Footer always at bottom */}

@@ -33,32 +33,17 @@ export default function Profile() {
                   <Link href="/">Home</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
+              
               <BreadcrumbSeparator />
-              {/* <BreadcrumbItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1">
-                    Toggle menu
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    <DropdownMenuItem>Documentation</DropdownMenuItem>
-                    <DropdownMenuItem>Themes</DropdownMenuItem>
-                    <DropdownMenuItem>GitHub</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator /> */}
+              
               <BreadcrumbItem>
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1">
-                    <BreadcrumbPage>Dashboard</BreadcrumbPage>
-                  </DropdownMenuTrigger>
+                    <BreadcrumbPage>Profile</BreadcrumbPage>
                   <DropdownMenuContent align="start">
-                    <DropdownMenuItem>Notes</DropdownMenuItem>
-                    {/* <DropdownMenuItem>Themes</DropdownMenuItem> */}
-                    {/* <DropdownMenuItem>GitHub</DropdownMenuItem> */}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </BreadcrumbItem>
+
             </BreadcrumbList>
           </Breadcrumb>
         </div>

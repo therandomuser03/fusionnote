@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
@@ -12,6 +12,8 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { toast } from "sonner";
+// import { CldImage } from 'next-cloudinary';
+// import Image from "next/image"; // No longer strictly needed if CldImage is always used for images with URLs
 
 export default function ProfileData() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,11 +23,20 @@ export default function ProfileData() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [image, setImage] = useState("");
+  // `image` stores the *persisted* Cloudinary URL from the database or after successful save.
+  const [image, setImage] = useState<string | null>(null);
+  // `imageFile` is for the *currently selected file* for upload.
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  // `previewUrl` is for displaying either the existing `image` or the locally selected `imageFile`.
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // AlertDialog state
   const [openDialog, setOpenDialog] = useState(false);
 
+  // --- Fetch Profile Data ---
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -34,10 +45,12 @@ export default function ProfileData() {
         });
         const json = await res.json();
         if (json?.data) {
-          const { name, username, email } = json.data;
+          const { name, username, email, image: fetchedImage } = json.data; // Renamed to avoid clash
           setName(name || "");
           setUsername(username || "");
           setEmail(email || "");
+          setImage(fetchedImage || null); // Set the actual saved image URL
+          setPreviewUrl(fetchedImage || null); // Initialize preview with saved image
         }
       } catch (err) {
         toast.error("Failed to load profile");
@@ -48,35 +61,117 @@ export default function ProfileData() {
     fetchProfile();
   }, []);
 
-  const handleSave = async () => {
-    try {
-      const res = await fetch("/api/users/update", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          username,
-          email,
-          password,
-          image,
-        }),
-      });
+  // --- Effect to create and revoke object URL for local image preview ---
+  useEffect(() => {
+    if (imageFile) {
+      const url = URL.createObjectURL(imageFile);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url); // Clean up URL when component unmounts or imageFile changes
+    }
+    // If imageFile is cleared, but there's a saved image, show that.
+    // If both are null, then preview will be null.
+    else if (!imageFile && image) {
+      setPreviewUrl(image);
+    } else if (!imageFile && !image) {
+        setPreviewUrl(null);
+    }
+  }, [imageFile, image]); // Depend on both imageFile (local selection) and image (persisted URL)
 
-      const json = await res.json();
 
-      if (!res.ok) throw new Error(json.message || "Failed to update");
+  // --- Handle Image File Selection and Upload ---
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImageFile(file); // Store the file for local preview (via useEffect)
 
-      toast.success("Profile updated successfully");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        toast.error(err.message || "Update failed");
-      } else {
-        toast.error("An unknown error occurred.");
+      setIsUploading(true);
+      
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch("/api/users/upload-image", { // Keep your chosen path
+          method: "POST",
+          body: formData,
+        });
+        const json = await res.json();
+
+        if (!res.ok) {
+            // If upload fails, revert to previous image or null
+            setPreviewUrl(image);
+            setImageFile(null); // Clear selected file
+            throw new Error(json.message || "Failed to upload image");
+        }
+
+        setImage(json.imageUrl); // This is the KEY: Update the `image` state with the Cloudinary URL
+        toast.success("Profile photo uploaded successfully! Click Save to apply.");
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          toast.error(err.message || "Image upload failed");
+        } else {
+          toast.error("An unknown error occurred during upload.");
+        }
+      } finally {
+        setIsUploading(false);
+        // Clear the file input value after upload attempt to allow re-uploading the same file
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
       }
-    } finally {
-      setOpenDialog(false);
     }
   };
+
+  // --- Handle Remove Image ---
+  const handleRemoveImage = () => {
+    setImage(null); // Clear the persisted image URL
+    setImageFile(null); // Clear any locally selected file
+    setPreviewUrl(null); // Clear the preview
+    toast.info("Profile photo cleared. Click Save to apply.");
+  };
+
+  // --- Handle Save Profile Data ---
+const handleSave = async () => {
+  // Add this console.log *before* the fetch call
+  console.log("Saving profile with image URL:", image); // <--- ADD THIS LINE
+
+  try {
+    const res = await fetch("/api/users/update", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        username,
+        email,
+        ...(password && { password }),
+        image, // Send the current `image` state (which holds the Cloudinary URL or null)
+      }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) throw new Error(json.message || "Failed to update");
+
+    toast.success("Profile updated successfully");
+    setOpenDialog(false); // Close dialog on success
+    // OPTIONAL: Re-fetch profile data to ensure all UI is perfectly in sync with DB
+    // const profileRes = await fetch("/api/users/profile", { method: "POST" });
+    // const profileJson = await profileRes.json();
+    // if (profileJson?.data) {
+    //   setImage(profileJson.data.image || null);
+    //   setPreviewUrl(profileJson.data.image || null);
+    // }
+
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      toast.error(err.message || "Update failed");
+    } else {
+      toast.error("An unknown error occurred.");
+    }
+  } finally {
+    // Don't close dialog on error, let user see error and potentially fix.
+    // If you want to close it regardless, put it here.
+  }
+};
 
   return (
     <form
@@ -104,9 +199,6 @@ export default function ProfileData() {
               Username
             </label>
             <div className="flex items-center rounded-md border border-input bg-background px-3 py-2 focus-within:ring-2 focus-within:ring-ring">
-              {/* <span className="text-muted-foreground select-none">
-                fusionnote.vercel.app/
-              </span> */}
               <input
                 type="text"
                 id="username"
@@ -117,20 +209,8 @@ export default function ProfileData() {
             </div>
           </div>
 
-          <div className="sm:col-span-2">
-            <label
-              htmlFor="photo"
-              className="block text-sm font-medium text-primary mb-1"
-            >
-              Photo URL
-            </label>
-            <Input
-              id="photo"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              placeholder="Paste image URL"
-            />
-          </div>
+          {/* Photo Upload Section */}
+
         </div>
       </section>
 
@@ -185,6 +265,7 @@ export default function ProfileData() {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 value={password}
+                placeholder="Enter your new password"
                 onChange={(e) => setPassword(e.target.value)}
                 className="pr-10"
               />

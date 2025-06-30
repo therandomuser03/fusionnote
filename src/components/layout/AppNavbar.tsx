@@ -153,7 +153,10 @@ export default function AppNavbar() {
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
                     <AvatarImage alt="@shadcn" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    {/* MODIFIED THIS LINE */}
+                    <AvatarFallback>
+                      {userName ? userName.charAt(0).toUpperCase() : "U"}
+                    </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
