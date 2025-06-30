@@ -21,6 +21,8 @@ import {
 import { Button } from "../ui/button";
 import { CalendarClockIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { tiptapJsonToPlainText } from "@/utils/tiptap-extensions";
 
 type Note = {
   id: string;
@@ -31,31 +33,29 @@ type Note = {
 
 export default function NotesContent() {
   const [notes, setNotes] = useState<Note[]>([]);
+  const stripHtml = (html: string) => {
+    return html.replace(/<[^>]*>/g, "").slice(0, 140);
+  };
 
-  // Mock fetch (replace this with real API call)
   useEffect(() => {
     const fetchNotes = async () => {
-      // Example: Simulating a fetch call
-      const dataFromBackend: Note[] = [
-        {
-          id: "1",
-          title: "Note One",
-          description: "This is note one.",
-          image: "/sample1.jpg",
-        },
-        {
-          id: "2",
-          title: "Note Two",
-          description: "This is note two.",
-        },
-        {
-          id: "3",
-          title: "Note Three",
-          description: "This is note three.",
-          image: "/sample3.jpg",
-        },
-      ];
-      setNotes(dataFromBackend);
+      try {
+        const res = await fetch("/api/notes");
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || "Failed to fetch notes");
+
+        const transformed = data.map((note: any) => ({
+          id: note._id,
+          title: note.title,
+          description: tiptapJsonToPlainText(note.content), // you can improve this
+          image: note.image || null,
+        }));
+
+        setNotes(transformed);
+      } catch (err) {
+        console.error("Error loading notes:", err);
+      }
     };
 
     fetchNotes();
@@ -179,7 +179,9 @@ export default function NotesContent() {
                   <div className="inline-flex items-center gap-1">
                     <CalendarClockIcon size={16} /> Date
                   </div>
-                  <Button variant="outline">View Details</Button>
+                  <Link href={`/notes/${note.id}`}>
+                    <Button variant="outline">View Note</Button>
+                  </Link>
                 </div>
               </CardFooter>
             </Card>

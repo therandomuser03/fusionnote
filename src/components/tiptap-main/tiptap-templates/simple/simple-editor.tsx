@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useParams } from "next/navigation";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
@@ -67,9 +68,6 @@ import { LinkIcon } from "@/components/tiptap-main/tiptap-icons/link-icon";
 import { useMobile } from "@/hooks/use-mobile";
 import { useWindowSize } from "@/hooks/use-window-size";
 import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
-
-// --- Components ---
-import { ThemeToggle } from "@/components/tiptap-main/tiptap-templates/simple/theme-toggle";
 
 // --- Lib ---
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
@@ -146,18 +144,14 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
 
       <ToolbarGroup>
-  <ImageUploadButton text="Add" />
-  <SaveNoteButton onClick={onSaveClick} />
-  <DownloadNoteButton onClick={onDownloadClick} />
-</ToolbarGroup>
+        <ImageUploadButton text="Add" />
+        <SaveNoteButton onClick={onSaveClick} />
+        <DownloadNoteButton onClick={onDownloadClick} />
+      </ToolbarGroup>
 
       <Spacer />
 
       {isMobile && <ToolbarSeparator />}
-
-      <ToolbarGroup>
-        <ThemeToggle />
-      </ToolbarGroup>
     </>
   );
 };
@@ -194,11 +188,15 @@ const MobileToolbarContent = ({
 export function SimpleEditor() {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
-  const [mobileView, setMobileView] = React.useState<"main" | "highlighter" | "link">("main");
+  const [mobileView, setMobileView] = React.useState<
+    "main" | "highlighter" | "link"
+  >("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
   const saveTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const [isSaving, setIsSaving] = React.useState(false);
-
+  const [title, setTitle] = React.useState("Untitled Note");
+  const params = useParams();
+  const [noteId, setNoteId] = React.useState<string | null>(null);
   const editor = useEditor({
     immediatelyRender: false,
     editorProps: {
@@ -236,78 +234,105 @@ export function SimpleEditor() {
 
   // SAVE FUNCTION
   const handleSave = async (silent = false) => {
-  if (!editor) return;
+    if (!editor) return;
 
-  try {
-    const html = editor.getHTML();
+    const html = editor.getJSON();
 
-    await fetch("/api/notes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: "Untitled Note",
-        content: html,
-      }),
-    });
-
-    if (!silent) {
-      // manual save — handled via toast.promise in SaveNoteButton
+    if (!title.trim()) {
+      toast.error("Please enter a title.");
       return;
-    } else {
-      // silent auto-save — just show background toast
+    }
+
+    try {
+      const method = noteId ? "PUT" : "POST";
+      const url = "/api/notes";
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: noteId,
+          title,
+          content: html,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to save note");
+      }
+
+      const data = await res.json();
+
+      if (!noteId && data._id) {
+        setNoteId(data._id);
+      }
+
+      if (!silent) return;
       toast.success("Auto-saved", { duration: 2000 });
+    } catch (err) {
+      console.error("Save failed:", err);
+      if (!silent) {
+        return;
+      } else {
+        toast.error("Auto-save failed", { duration: 2000 });
+      }
     }
-  } catch (err) {
-    console.error("Save failed:", err);
-    if (!silent) {
-      // handled in SaveNoteButton toast.promise
-      return;
-    } else {
-      toast.error("Auto-save failed", { duration: 2000 });
-    }
-  }
-};
+  };
 
   // AUTO-SAVE ON IDLE
   React.useEffect(() => {
-    if (!editor) return;
+    if (!params?.id || !editor) return;
 
-    const handleUpdate = () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
+    const fetchNote = async () => {
+      try {
+        const res = await fetch(`/api/notes?id=${params.id}`);
+        if (!res.ok) throw new Error("Failed to fetch note");
 
-      saveTimeoutRef.current = setTimeout(async () => {
-        setIsSaving(true);
-        await handleSave(true); // silent auto-save
-        setIsSaving(false);
-      }, 2000);
-    };
-
-    editor.on("update", handleUpdate);
-
-    return () => {
-      editor.off("update", handleUpdate);
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
+        const data = await res.json();
+        setTitle(data.title);
+        setNoteId(data._id);
+        editor.commands.setContent(data.content || "");
+      } catch (err) {
+        console.error(err);
+        toast.error("Could not load note.");
       }
     };
-  }, [editor]);
+
+    fetchNote();
+  }, [params?.id, editor]);
 
   // DOWNLOAD FUNCTION
-  const handleDownload = () => {
-    if (!editor) return;
+  const handleDownload = async () => {
+  if (!noteId) {
+    toast.error("Note not saved yet.");
+    return;
+  }
 
-    const contentHTML = editor.getHTML();
-    const container = document.createElement("div");
-    container.innerHTML = contentHTML;
+  toast("Started converting to PDF");
 
-    import("html2pdf.js").then((html2pdf) => {
-      html2pdf.default().from(container).save("note.pdf");
-    });
-  };
+  try {
+    const res = await fetch(`/api/notes/pdf?id=${noteId}`);
+    if (!res.ok) throw new Error("Failed to generate PDF");
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${title || "note"}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+    toast.success("PDF downloaded.");
+  } catch (err) {
+    console.error("Download failed:", err);
+    toast.error("Failed to download note.");
+  }
+};
 
   const bodyRect = useCursorVisibility({
     editor,
@@ -322,6 +347,23 @@ export function SimpleEditor() {
 
   return (
     <EditorContext.Provider value={{ editor }}>
+      <div style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Enter note title..."
+          className="note-title-input"
+          style={{
+            width: "100%",
+            fontSize: "1.5rem",
+            fontWeight: "bold",
+            border: "none",
+            outline: "none",
+            background: "transparent",
+          }}
+        />
+      </div>
       <Toolbar
         ref={toolbarRef}
         style={
@@ -333,20 +375,20 @@ export function SimpleEditor() {
         }
       >
         {mobileView === "main" ? (
-    <MainToolbarContent
-      onHighlighterClick={() => setMobileView("highlighter")}
-      onLinkClick={() => setMobileView("link")}
-      isMobile={isMobile}
-      onSaveClick={handleSave}
-      onDownloadClick={handleDownload}
-    />
-  ) : (
-    <MobileToolbarContent
-      type={mobileView === "highlighter" ? "highlighter" : "link"}
-      onBack={() => setMobileView("main")}
-    />
-  )}
-</Toolbar>
+          <MainToolbarContent
+            onHighlighterClick={() => setMobileView("highlighter")}
+            onLinkClick={() => setMobileView("link")}
+            isMobile={isMobile}
+            onSaveClick={handleSave}
+            onDownloadClick={handleDownload}
+          />
+        ) : (
+          <MobileToolbarContent
+            type={mobileView === "highlighter" ? "highlighter" : "link"}
+            onBack={() => setMobileView("main")}
+          />
+        )}
+      </Toolbar>
 
       <div className="content-wrapper">
         <EditorContent

@@ -1,4 +1,4 @@
-// getDataFromToken
+// utils/auth.ts
 
 import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
@@ -9,19 +9,30 @@ interface JwtPayload {
   exp?: number;
 }
 
-export const getDataFromToken = (request: NextRequest) => {
+export const getDataFromToken = (request: NextRequest): string => {
+  const token = request.cookies.get("token")?.value;
+
+  if (!token) {
+    throw new Error("Authentication token is missing.");
+  }
+
   try {
-    const token = request.cookies.get("token")?.value || "";
-    const decodedToken = jwt.verify(
-      token,
-      process.env.TOKEN_SECRET!
-    ) as JwtPayload;
-    return decodedToken.id;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error("An unknown error occurred while verifying token.");
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET!) as JwtPayload;
+
+    if (!decoded.id) {
+      throw new Error("Token payload is invalid.");
     }
+
+    return decoded.id;
+  } catch (err: unknown) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      throw new Error("Invalid token.");
+    }
+
+    if (err instanceof jwt.TokenExpiredError) {
+      throw new Error("Token has expired.");
+    }
+
+    throw new Error("Authentication failed.");
   }
 };
