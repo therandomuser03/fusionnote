@@ -23,6 +23,7 @@ import { CalendarClockIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { tiptapJsonToPlainText } from "@/utils/tiptap-extensions";
+import { JSONContent } from "@/types/tiptap";
 
 type Note = {
   id: string;
@@ -34,7 +35,7 @@ type Note = {
 type RawNote = {
   _id: string;
   title: string;
-  content: string | Record<string, unknown>; // You could replace this with TipTap JSONContent
+  content: string | JSONContent;
   image?: string | null;
 };
 
@@ -49,12 +50,39 @@ export default function NotesContent() {
 
         if (!res.ok) throw new Error(data.error || "Failed to fetch notes");
 
-        const transformed = (data as RawNote[]).map((note) => ({
-          id: note._id,
-          title: note.title,
-          description: tiptapJsonToPlainText(note.content),
-          image: note.image || null,
-        }));
+        const transformed = (data as RawNote[]).map((note) => {
+          let description = "";
+          
+          try {
+            // Handle different content formats
+            if (typeof note.content === "string") {
+              // If content is a string, try to parse it as JSON first
+              try {
+                const parsedContent = JSON.parse(note.content) as JSONContent;
+                description = tiptapJsonToPlainText(parsedContent);
+              } catch {
+                // If parsing fails, treat it as plain text
+                description = note.content;
+              }
+            } else if (note.content && typeof note.content === "object") {
+              // If content is already an object, use it directly
+              description = tiptapJsonToPlainText(note.content as JSONContent);
+            } else {
+              // Fallback for null/undefined content
+              description = "";
+            }
+          } catch (error) {
+            console.error("Error processing note content:", error);
+            description = "Error loading note content";
+          }
+
+          return {
+            id: note._id,
+            title: note.title,
+            description,
+            image: note.image || null,
+          };
+        });
 
         setNotes(transformed);
       } catch (err) {

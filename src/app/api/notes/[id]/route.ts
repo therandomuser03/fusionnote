@@ -4,9 +4,9 @@ import Note from '@/models/Note';
 import { getDataFromToken } from '@/utils/auth';
 
 interface GetNoteContext {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function POST(req: NextRequest) {
@@ -34,7 +34,7 @@ export async function PUT(req: NextRequest, context: GetNoteContext) {
   try {
     await connect();
     const userId = getDataFromToken(req);
-    const { id } = context.params;
+    const { id } = await context.params;
 
     const { title, content } = await req.json();
 
@@ -64,7 +64,7 @@ export async function GET(req: NextRequest, context: GetNoteContext) {
   try {
     await connect();
     const userId = getDataFromToken(req);
-    const { id } = context.params;
+    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json({ error: 'Note ID is required in the path' }, { status: 400 });
