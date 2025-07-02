@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.13",
-    "@prisma/client": "^6.10.1",
+    "@prisma/client": "^6.11.0",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-context-menu": "^2.2.15",
@@ -81,7 +81,7 @@
     "eslint-config-next": "15.3.4",
     "glob": "^11.0.3",
     "postcss": "^8",
-    "prisma": "^6.10.1",
+    "prisma": "^6.11.0",
     "sass": "^1.89.2",
     "tailwindcss": "^4.1.11",
     "tw-animate-css": "^1.3.4",

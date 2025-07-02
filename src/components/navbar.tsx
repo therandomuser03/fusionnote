@@ -47,26 +47,26 @@ export default function Navbar() {
             <NavigationMenu viewport={false}>
               <NavigationMenuList>
                 <NavigationMenuItem className="group relative">
-                  <NavigationMenuTrigger>Features</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="bg-transparent">Features</NavigationMenuTrigger>
                   <NavigationMenuContent className="mt-8">
                     <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                      <ListItem href="/docs" title="Real-time Sync">
+                      <ListItem href="#" title="Real-time Sync">
                         Collaborative editing in real-time.
                       </ListItem>
                       <ListItem
-                        href="/docs/installation"
+                        href="#"
                         title="Markdown Support"
                       >
                         Type like a dev.
                       </ListItem>
                       <ListItem
-                        href="/docs/primitives/typography"
+                        href="#"
                         title="Tagging & Folders"
                       >
                         Organize your notes.
                       </ListItem>
                       <ListItem
-                        href="/docs/primitives/typography"
+                        href="#"
                         title="Custom Themes"
                       >
                         Personalize your workspace.
@@ -79,10 +79,10 @@ export default function Navbar() {
                     asChild
                     className={navigationMenuTriggerStyle()}
                   >
-                    <Link href="/pricing">Pricing</Link>
+                    <Link href="/pricing" className="bg-transparent">Pricing</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
-                <NavigationMenuItem>
+                {/* <NavigationMenuItem>
                   <NavigationMenuTrigger>Templates</NavigationMenuTrigger>
                   <NavigationMenuContent className="mt-8">
                     <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
@@ -112,35 +112,35 @@ export default function Navbar() {
                       </ListItem>
                     </ul>
                   </NavigationMenuContent>
-                </NavigationMenuItem>
+                </NavigationMenuItem> */}
 
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     asChild
                     className={navigationMenuTriggerStyle()}
                   >
-                    <Link href="/docs">Docs</Link>
+                    <Link href="/docs" className="bg-transparent">Docs</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>Changelog</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="bg-transparent">Changelog</NavigationMenuTrigger>
                   <NavigationMenuContent className="mt-8">
                     <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                      <ListItem href="/docs" title="v1.0 Release">
+                      <ListItem href="#" title="v1.0 Release">
                         First stable version.
                       </ListItem>
-                      <ListItem href="/docs/installation" title="GitHub Repo">
+                      <ListItem href="https://github.com/therandomuser03/fusionnote/" title="GitHub Repo">
                         View on GitHub.
                       </ListItem>
-                      <ListItem
-                        href="/docs/primitives/typography"
+                      {/* <ListItem
+                        href="/changelog/roadmap"
                         title="Roadmap"
                       >
                         Upcoming features.
-                      </ListItem>
+                      </ListItem> */}
                       <ListItem
-                        href="/docs/primitives/typography"
+                        href="/changelog/feedback"
                         title="Feedback / Request"
                       >
                         User feature voting or form.

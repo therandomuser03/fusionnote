@@ -4,14 +4,17 @@ import { PencilLine } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import axios from "axios";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 
-export default function Login() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   const handleLogin = async (userData: { email: string; password: string }) => {
     try {
@@ -19,7 +22,7 @@ export default function Login() {
       const response = await axios.post("/api/users/login", userData);
       console.log("Login success", response.data);
       toast.success("Logged into account successfully!");
-      router.push("/dashboard");
+      router.push(callbackUrl);
     } catch (error: unknown) {
       console.log("Log in failed");
 
@@ -63,5 +66,13 @@ export default function Login() {
         />
       </div>
     </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<div className="text-center p-6">Loading login...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

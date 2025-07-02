@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function NotesHeader() {
   const [, setData] = useState<{ _id?: string; username?: string }>({});
@@ -32,11 +33,18 @@ export default function NotesHeader() {
           <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
             Notes
           </h2>
-          <Link href={"/notes/create"}>
-            <Button variant="secondary">
-              <Plus /> New
-            </Button>
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href="/notes/create">
+                <Button variant="secondary">
+                  <Plus /> New
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Create new note</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </div>

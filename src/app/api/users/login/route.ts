@@ -16,13 +16,17 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "User does not exists" },
+        { error: "User does not exist" },
         { status: 400 }
       );
     }
+
     console.log("User exists");
 
-    const validPassword = await bcryptjs.compare(password, user.password);
+    const validPassword = await bcryptjs.compare(
+      password,
+      user.password || ""
+    );
 
     if (!validPassword) {
       return NextResponse.json(
@@ -37,20 +41,30 @@ export async function POST(request: NextRequest) {
       email: user.email,
     };
 
-    const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
+    const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
       expiresIn: "1d",
     });
 
     const response = NextResponse.json({
-      message: "Login Success",
+      message: "Login success",
       success: true,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
     });
 
     response.cookies.set("token", token, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
     });
+
     return response;
   } catch (error: unknown) {
+    console.error("Login error:", error);
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

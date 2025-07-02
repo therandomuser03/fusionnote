@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { FileText, Pin, Plus, Trash } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function AppHeader() {
   const [data, setData] = useState<{ _id?: string; name?: string }>({});
@@ -42,11 +43,18 @@ export default function AppHeader() {
             <Pin className="inline-flex size-5" /> _ pinned |{" "}
             <Trash className="inline-flex size-5" /> _ in trash
           </h4>
-          <Link href={"/notes/create"}>
-            <Button variant="secondary">
-              <Plus /> New
-            </Button>
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href="/notes/create">
+                <Button variant="secondary">
+                  <Plus /> New
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Create new note</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </div>

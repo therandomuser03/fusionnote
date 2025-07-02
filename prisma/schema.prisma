@@ -62,8 +62,9 @@ model users {
   noteVersions     noteVersion[] @relation("noteVersionChangedBy") // Note versions changed by this user
   comments         comment[] // Comments made by this user
   sharedNotePermissions notePermission[] // Permissions granted to this user on individual notes
-
   Workspace workspace[]
+  feedback feedbacks[]
+  deletedNotes deletedNotes[]
 }
 
 // =====================================================================
@@ -83,7 +84,6 @@ model account {
   scope              String? // Scopes granted by the OAuth provider
   id_token           String? // ID token from OAuth provider
   session_state      String? // OAuth session state
-
   user               users    @relation(fields: [userId], references: [id], onDelete: Cascade) // Establishes relation to User
 
   @@unique([provider, providerAccountId]) // Ensures unique combination of provider and account ID
@@ -97,7 +97,6 @@ model session {
   sessionToken String   @unique // Unique token for the session
   userId       String   @db.ObjectId // Foreign key to the User model
   expires      DateTime // Expiration date of the session
-
   user         users     @relation(fields: [userId], references: [id], onDelete: Cascade) // Establishes relation to User
 }
 
@@ -128,9 +127,9 @@ model workspace {
   owner       users              @relation(fields: [ownerId], references: [id]) // Owner of the workspace
   members     workspaceMember[] // Members associated with this workspace
   notes       notes[]            @relation("workspaceNotes") // Notes belonging to this workspace
-
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
+  deletedNotes deletedNotes[]
 }
 
 // =====================================================================
@@ -146,7 +145,6 @@ model workspaceMember {
   // Relationships
   user        users          @relation(fields: [userId], references: [id], onDelete: Cascade)
   workspace   workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -265,7 +263,6 @@ model notePermission {
   noteId          String              @db.ObjectId // Foreign key to the Note
   userId          String              @db.ObjectId // Foreign key to the User being granted permission
   permissionLevel notePermissionLevel // The level of access (VIEWER, EDITOR)
-
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
 
@@ -284,7 +281,6 @@ model userFavoriteNote {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId // Foreign key to the User
   noteId    String   @db.ObjectId // Foreign key to the Note
-
   createdAt DateTime @default(now())
 
   // Relationships
@@ -292,4 +288,38 @@ model userFavoriteNote {
   note      notes     @relation(fields: [noteId], references: [id], onDelete: Cascade)
 
   @@unique([userId, noteId]) // Ensures a user can only favorite a note once
+}
+
+enum Rating {
+  ONE
+  TWO
+  THREE
+  FOUR
+  FIVE
+}
+
+model feedbacks {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String?  @db.ObjectId // Optional: if user is logged in
+  message   String
+  rating    Rating
+  email     String?
+  createdAt DateTime @default(now())
+
+  // Relationships
+  user      users?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model deletedNotes {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  originalNoteId String @db.ObjectId // References the note that was deleted
+  title     String
+  content   String
+  ownerId   String   @db.ObjectId
+  deletedAt DateTime @default(now()) // Timestamp when this was moved to trash
+  workspaceId String? @db.ObjectId
+
+  // Relationships
+  owner     users      @relation(fields: [ownerId], references: [id])
+  workspace workspace? @relation(fields: [workspaceId], references: [id])
 }
