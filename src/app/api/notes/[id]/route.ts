@@ -1,3 +1,5 @@
+// src/app/api/notes/[id]/route.ts
+
 import { NextResponse, NextRequest } from 'next/server';
 import { connect } from '@/lib/db';
 import Note from '@/models/Note';

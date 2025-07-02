@@ -7,12 +7,13 @@ import { connect } from "@/lib/db";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
   await connect();
 
   try {
-    const note = await Note.findById(params.id);
+    const note = await Note.findById(id);
 
     if (!note) {
       return NextResponse.json({ success: false, error: "Note not found" }, { status: 404 });

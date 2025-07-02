@@ -50,7 +50,7 @@ export default async function Page({ params }: PageProps) {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <DropdownMenu>
-                  <BreadcrumbPage>Created Note</BreadcrumbPage>
+                  <BreadcrumbPage>Note Details</BreadcrumbPage>
                   <DropdownMenuContent align="start" />
                 </DropdownMenu>
               </BreadcrumbItem>

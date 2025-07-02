@@ -157,30 +157,26 @@ model workspaceMember {
 // =====================================================================
 model notes {
   id              String             @id @default(auto()) @map("_id") @db.ObjectId
-  title           String // Title of the note
-  // TipTap content can be stored as a String (HTML) or Json (ProseMirror JSON).
-  // String is generally more flexible for direct rendering, Json for programmatic manipulation.
-  content         String // Rich text content from TipTap (e.g., HTML or ProseMirror JSON stringified)
-  ownerId         String             @db.ObjectId // User who created/owns this note
-
-  // Optional: A note can belong to a workspace for better organization and collaboration
-  workspaceId     String?            @db.ObjectId // Foreign key to Workspace, optional
-
-  isPublic        Boolean            @default(false) // If true, the note can be viewed by anyone with the link
-  isArchived      Boolean            @default(false) // For soft archiving notes
-  deletedAt       DateTime? // Timestamp for soft deletion (null if not deleted)
-
+  title           String
+  content         String
+  ownerId         String             @db.ObjectId
+  workspaceId     String?            @db.ObjectId
+  isPublic        Boolean            @default(false)
+  isArchived      Boolean            @default(false)
+  deletedAt       DateTime?
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
 
+  isPinned        Boolean            @default(false)
+
   // Relationships
   owner           users               @relation(fields: [ownerId], references: [id])
-  workspace       workspace?         @relation("workspaceNotes", fields: [workspaceId], references: [id]) // Optional relationship to a workspace
-  noteTags        noteTag[]          // Explicit many-to-many relationship with tags
-  versions        noteVersion[]      @relation("noteVersions") // Version history of this note
-  comments        comment[]          @relation("noteComments") // Comments on this note
-  favoritedBy     userFavoriteNote[] // Users who have favorited this note
-  permissions     notePermission[]   // Specific permissions for users on this note (granular sharing)
+  workspace       workspace?         @relation("workspaceNotes", fields: [workspaceId], references: [id])
+  noteTags        noteTag[]
+  versions        noteVersion[]      @relation("noteVersions")
+  comments        comment[]          @relation("noteComments")
+  favoritedBy     userFavoriteNote[]
+  permissions     notePermission[]
 }
 
 // =====================================================================

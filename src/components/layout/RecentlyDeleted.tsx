@@ -11,7 +11,8 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 import Image from "next/image";
-import { CalendarClockIcon } from "lucide-react";
+import { CalendarClockIcon, LucideTrash2 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 type Note = {
   id: string;
@@ -91,15 +92,38 @@ export default function RecentlyDeleted() {
                 </CardDescription>
               </CardContent>
 
-                <CardFooter className="mt-auto px-4 flex-col items-start gap-2">
+              <CardFooter className="mt-auto px-4 flex-col items-start gap-2">
                 <div className="w-full flex justify-between items-center text-sm text-muted-foreground">
                   <div className="inline-flex items-center gap-1">
-                  <CalendarClockIcon size={16} /> Deleted ___ day ago
+                    <CalendarClockIcon size={16} /> Deleted ___ day ago
                   </div>
-                  <Button variant="outline">Restore</Button>
+
+                  <div className="flex gap-2 items-center">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="destructive" size="icon">
+                          <LucideTrash2 className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">
+                        <p>Delete forever</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="outline" size="icon">
+                          <span className="sr-only">Restore</span>
+                          ♻️
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">
+                        <p>Restore note</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </div>
-                <Button variant="destructive">Go to Trash</Button>
-                </CardFooter>
+              </CardFooter>
             </Card>
           ))}
         </div>

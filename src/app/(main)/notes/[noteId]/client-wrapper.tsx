@@ -1,7 +1,11 @@
+// src/app/(main)/notes/[noteId]/client-wrapper.tsx
+
 "use client";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { JSONContent } from "@/types/tiptap";
+import { toast } from "sonner";
+import { Pin, PinOff } from "lucide-react";
 
 const EditorLoading = () => (
   <div className="max-w-3xl mx-auto p-8">
@@ -20,6 +24,7 @@ const NoteDisplay = dynamic(() => import("@/components/notes/NoteDisplay"), {
 interface Note {
   title: string;
   content: JSONContent;
+  pinned?: boolean; // Optional, in case backend supports pinning
 }
 
 interface NoteClientPageProps {
@@ -30,6 +35,7 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
   const [note, setNote] = useState<Note | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPinned, setIsPinned] = useState(false); // Pin state
 
   useEffect(() => {
     if (!noteId) {
@@ -42,10 +48,10 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
       setIsLoading(true);
       setNote(null);
       setError(null);
-      
+
       try {
         const res = await fetch(`/api/notes/${noteId}`);
-        
+
         if (!res.ok) {
           if (res.status === 404) {
             throw new Error("Note not found");
@@ -53,7 +59,9 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
           if (res.status === 403) {
             throw new Error("You don't have permission to view this note");
           }
-          throw new Error(`Failed to fetch note: ${res.status} ${res.statusText}`);
+          throw new Error(
+            `Failed to fetch note: ${res.status} ${res.statusText}`
+          );
         }
 
         const data = await res.json();
@@ -62,29 +70,29 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
           throw new Error("No data received from server");
         }
 
-        // Handle content parsing more safely
         let parsedContent: JSONContent;
         try {
-          parsedContent = typeof data.content === "string" 
-            ? JSON.parse(data.content) 
-            : data.content;
+          parsedContent =
+            typeof data.content === "string"
+              ? JSON.parse(data.content)
+              : data.content;
         } catch (parseError) {
           console.error("Failed to parse note content:", parseError);
           throw new Error("Invalid note content format");
         }
 
-        // Validate that parsedContent is valid JSONContent
-        if (!parsedContent || typeof parsedContent !== 'object') {
+        if (!parsedContent || typeof parsedContent !== "object") {
           throw new Error("Invalid note content structure");
         }
 
         setNote({
           title: data.title || "Untitled",
           content: parsedContent,
+          pinned: data.isPinned || false,
         });
+        setIsPinned(data.isPinned || false);
       } catch (err: unknown) {
         console.error("❌ Failed to fetch note:", err);
-        
         if (err instanceof Error) {
           setError(err.message);
         } else {
@@ -98,12 +106,36 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
     fetchNote();
   }, [noteId]);
 
-  // Handle loading state
+  const handlePinToggle = async () => {
+    const newPinned = !isPinned;
+
+    try {
+      const res = await fetch(`/api/notes/${noteId}/pin`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ pinned: newPinned }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update pin status");
+
+      const data = await res.json();
+      setIsPinned(data.isPinned);
+
+      toast.success(
+        `Note ${data.isPinned ? "pinned" : "unpinned"} successfully`
+      );
+    } catch (err) {
+      console.error("Error toggling pin:", err);
+      toast.error("Failed to update pinned status");
+    }
+  };
+
   if (isLoading) {
     return <EditorLoading />;
   }
 
-  // Handle error state
   if (error) {
     return (
       <div className="max-w-3xl mx-auto p-8">
@@ -123,10 +155,37 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
     );
   }
 
-  // Handle case where note is still null (shouldn't happen with proper loading state)
   if (!note) {
     return <EditorLoading />;
   }
 
-  return <NoteDisplay title={note.title} content={note.content} />;
+  return (
+    <div className="max-w-3xl mx-auto p-8 space-y-6">
+      <div className="flex items-center justify-end">
+  <button
+    onClick={handlePinToggle}
+    className={`group relative px-3 py-1 text-sm rounded transition
+      ${isPinned
+        ? "bg-yellow-400 text-black hover:bg-gray-200 hover:text-gray-700"
+        : "bg-gray-200 text-gray-700 hover:bg-yellow-400 hover:text-black"}
+    `}
+  >
+    {isPinned ? (
+      <>
+        <Pin className="group-hover:hidden" />
+        <PinOff className="hidden group-hover:inline" />
+      </>
+    ) : (
+      <>
+        <PinOff className="group-hover:hidden" />
+        <Pin className="hidden group-hover:inline" />
+      </>
+    )}
+  </button>
+</div>
+
+
+      <NoteDisplay title={note.title} content={note.content} />
+    </div>
+  );
 }

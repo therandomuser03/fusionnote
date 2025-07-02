@@ -11,42 +11,67 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 import Image from "next/image";
-import { CalendarClockIcon } from "lucide-react";
+import Link from "next/link";
+import { CalendarClock } from "lucide-react";
+import { tiptapJsonToPlainText } from "@/utils/tiptap-extensions";
+import { JSONContent } from "@/types/tiptap";
 
 type Note = {
   id: string;
   title: string;
   description: string;
-  image?: string;
+  image?: string | null;
+};
+
+type RawNote = {
+  _id: string;
+  title: string;
+  content: string | JSONContent;
+  image?: string | null;
 };
 
 export default function RecentNotes() {
   const [notes, setNotes] = useState<Note[]>([]);
 
-  // Mock fetch (replace this with real API call)
   useEffect(() => {
     const fetchNotes = async () => {
-      // Example: Simulating a fetch call
-      const dataFromBackend: Note[] = [
-        {
-          id: "1",
-          title: "Note One",
-          description: "This is note one.",
-          image: "/sample1.jpg",
-        },
-        {
-          id: "2",
-          title: "Note Two",
-          description: "This is note two.",
-        },
-        {
-          id: "3",
-          title: "Note Three",
-          description: "This is note three.",
-          image: "/sample3.jpg",
-        },
-      ];
-      setNotes(dataFromBackend);
+      try {
+        const res = await fetch("/api/notes");
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || "Failed to fetch notes");
+
+        const transformed = (data as RawNote[]).map((note) => {
+          let description = "";
+
+          try {
+            if (typeof note.content === "string") {
+              try {
+                const parsed = JSON.parse(note.content) as JSONContent;
+                description = tiptapJsonToPlainText(parsed);
+              } catch {
+                description = note.content;
+              }
+            } else if (note.content && typeof note.content === "object") {
+              description = tiptapJsonToPlainText(note.content as JSONContent);
+            }
+          } catch {
+            description = "Error loading content";
+          }
+
+          return {
+            id: note._id,
+            title: note.title,
+            description,
+            image: note.image || null,
+          };
+        });
+
+        // Show only the 3 most recent notes
+        setNotes(transformed.slice(0, 3));
+      } catch (err) {
+        console.error("Error fetching recent notes:", err);
+      }
     };
 
     fetchNotes();
@@ -57,13 +82,11 @@ export default function RecentNotes() {
       <h3 className="z-20 text-2xl font-medium mx-auto items-center justify-center py-3 max-w-6xl">
         Recent Notes
       </h3>
+
       <div className="z-20 w-full flex items-center justify-center gap-8">
         <div className="w-6xl inline-grid grid-cols-3 gap-4">
           {notes.map((note) => (
-            <Card
-              key={note.id}
-              className="w-full max-w-sm overflow-hidden rounded-lg shadow"
-            >
+            <Card key={note.id} className="w-full max-w-sm overflow-hidden rounded-lg shadow">
               <CardHeader className="relative h-36 p-0 overflow-hidden">
                 {note.image ? (
                   <Image
@@ -94,9 +117,11 @@ export default function RecentNotes() {
               <CardFooter className="mt-auto px-4 pb-4">
                 <div className="w-full flex justify-between items-center text-sm text-muted-foreground">
                   <div className="inline-flex items-center gap-1">
-                    <CalendarClockIcon size={16} /> Last Edited:{" "}
+                    <CalendarClock size={16} /> Recently Created
                   </div>
-                  <Button variant="outline">View</Button>
+                  <Link href={`/notes/${note.id}`}>
+                    <Button variant="outline">View</Button>
+                  </Link>
                 </div>
               </CardFooter>
             </Card>

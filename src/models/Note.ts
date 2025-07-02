@@ -1,11 +1,11 @@
-// models/Note.ts
 import mongoose, { Schema, Document } from 'mongoose';
-import { JSONContent } from '@tiptap/react'; // ✅ Import TipTap content type
+import { JSONContent } from '@tiptap/react';
 
 export interface INote extends Document {
   title: string;
-  content: JSONContent; // ✅ Strongly typed content
+  content: JSONContent;
   ownerId: mongoose.Types.ObjectId;
+  isPinned?: boolean;
 }
 
 const NoteSchema: Schema<INote> = new Schema(
@@ -16,7 +16,7 @@ const NoteSchema: Schema<INote> = new Schema(
       trim: true,
     },
     content: {
-      type: Schema.Types.Mixed, // ✅ Accepts any valid TipTap JSON
+      type: Schema.Types.Mixed,
       required: true,
     },
     ownerId: {
@@ -24,15 +24,16 @@ const NoteSchema: Schema<INote> = new Schema(
       ref: 'User',
       required: true,
     },
+    isPinned: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// ✅ Force remove old cached model in dev (Next.js reload-safe)
-const Note = mongoose.models.Note
-  ? mongoose.deleteModel('Note') && mongoose.model<INote>('Note', NoteSchema)
-  : mongoose.model<INote>('Note', NoteSchema);
+const Note = (mongoose.models.Note as mongoose.Model<INote>) || mongoose.model<INote>('Note', NoteSchema);
 
 export default Note;
