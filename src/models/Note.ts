@@ -1,11 +1,15 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { JSONContent } from '@tiptap/react';
+// src/models/Note.ts
+
+import mongoose, { Schema, Document } from "mongoose";
+import { JSONContent } from "@tiptap/react";
 
 export interface INote extends Document {
   title: string;
   content: JSONContent;
   ownerId: mongoose.Types.ObjectId;
+  workspaceId?: mongoose.Types.ObjectId;
   isPinned?: boolean;
+  tags?: string[];
 }
 
 const NoteSchema: Schema<INote> = new Schema(
@@ -21,12 +25,21 @@ const NoteSchema: Schema<INote> = new Schema(
     },
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
+    },
+    workspaceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Workspace",
+      required: false,
     },
     isPinned: {
       type: Boolean,
       default: false,
+    },
+    tags: {
+      type: [String],
+      default: [],
     },
   },
   {
@@ -34,6 +47,8 @@ const NoteSchema: Schema<INote> = new Schema(
   }
 );
 
-const Note = (mongoose.models.Note as mongoose.Model<INote>) || mongoose.model<INote>('Note', NoteSchema);
+const Note =
+  (mongoose.models.Note as mongoose.Model<INote>) ||
+  mongoose.model<INote>("Note", NoteSchema);
 
 export default Note;

@@ -109,7 +109,7 @@ export default function PinnedNotes() {
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-4xl font-bold text-primary/30 blur-sm scale-150 text-center px-4">
+                      <span className="text-4xl font-bold text-primary/30 blur-xs scale-150 text-center px-4">
                         {note.title}
                       </span>
                     </div>

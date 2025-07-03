@@ -1,4 +1,4 @@
-// userModel.ts
+// src/modelsuserModel.ts
 import mongoose from "mongoose";
 
 

@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function AppFooter() {
   return (
-    <footer className="relative border-t border-primary/10 py-16 pb-32 bg-background overflow-hidden">
+    <footer className="relative border-t border-primary/10 py-16 pb-12 bg-background overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
           <p className="text-sm text-gray-400">

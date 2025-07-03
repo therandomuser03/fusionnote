@@ -307,15 +307,16 @@ model feedbacks {
 }
 
 model deletedNotes {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  originalNoteId String @db.ObjectId // References the note that was deleted
-  title     String
-  content   String
-  ownerId   String   @db.ObjectId
-  deletedAt DateTime @default(now()) // Timestamp when this was moved to trash
-  workspaceId String? @db.ObjectId
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  originalNoteId String   @db.ObjectId
+  title          String
+  content        String
+  image          String?
+  ownerId        String   @db.ObjectId
+  deletedAt      DateTime @default(now())
+  workspaceId    String?  @db.ObjectId
 
   // Relationships
-  owner     users      @relation(fields: [ownerId], references: [id])
-  workspace workspace? @relation(fields: [workspaceId], references: [id])
+  owner          users      @relation(fields: [ownerId], references: [id])
+  workspace      workspace? @relation(fields: [workspaceId], references: [id])
 }

@@ -24,12 +24,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { tiptapJsonToPlainText } from "@/utils/tiptap-extensions";
 import { JSONContent } from "@/types/tiptap";
+import { format } from "date-fns";
 
 type Note = {
   id: string;
   title: string;
   description: string;
   image?: string | null;
+  createdAt: string; // Add this
 };
 
 type RawNote = {
@@ -37,6 +39,7 @@ type RawNote = {
   title: string;
   content: string | JSONContent;
   image?: string | null;
+  createdAt: string; // Add this
 };
 
 export default function NotesContent() {
@@ -52,23 +55,18 @@ export default function NotesContent() {
 
         const transformed = (data as RawNote[]).map((note) => {
           let description = "";
-          
+
           try {
-            // Handle different content formats
             if (typeof note.content === "string") {
-              // If content is a string, try to parse it as JSON first
               try {
                 const parsedContent = JSON.parse(note.content) as JSONContent;
                 description = tiptapJsonToPlainText(parsedContent);
               } catch {
-                // If parsing fails, treat it as plain text
                 description = note.content;
               }
             } else if (note.content && typeof note.content === "object") {
-              // If content is already an object, use it directly
               description = tiptapJsonToPlainText(note.content as JSONContent);
             } else {
-              // Fallback for null/undefined content
               description = "";
             }
           } catch (error) {
@@ -81,6 +79,7 @@ export default function NotesContent() {
             title: note.title,
             description,
             image: note.image || null,
+            createdAt: note.createdAt, // 👈 Add this
           };
         });
 
@@ -115,8 +114,12 @@ export default function NotesContent() {
                     <SelectItem value="title z-a">Title (Z-A)</SelectItem>
                     <SelectItem value="last modified">Last Modified</SelectItem>
                     <SelectItem value="created date">Created Date</SelectItem>
-                    <SelectItem value="priority high-low">Priority (High → Low)</SelectItem>
-                    <SelectItem value="priority low-high">Priority (Low → High)</SelectItem>
+                    <SelectItem value="priority high-low">
+                      Priority (High → Low)
+                    </SelectItem>
+                    <SelectItem value="priority low-high">
+                      Priority (Low → High)
+                    </SelectItem>
                     <SelectItem value="custom order">Custom Order</SelectItem>
                   </SelectGroup>
                 </SelectContent>
@@ -137,7 +140,9 @@ export default function NotesContent() {
                     <SelectItem value="date range">Date Range</SelectItem>
                     <SelectItem value="attachments">Has Attachments</SelectItem>
                     <SelectItem value="favourited">Favourited Only</SelectItem>
-                    <SelectItem value="shared with me">Shared With Me</SelectItem>
+                    <SelectItem value="shared with me">
+                      Shared With Me
+                    </SelectItem>
                     <SelectItem value="by author">By Author</SelectItem>
                   </SelectGroup>
                 </SelectContent>
@@ -169,7 +174,10 @@ export default function NotesContent() {
       <div className="z-20 w-full flex items-center justify-center gap-8">
         <div className="w-6xl inline-grid grid-cols-3 gap-4 py-12">
           {notes.map((note) => (
-            <Card key={note.id} className="w-full max-w-sm overflow-hidden rounded-lg shadow">
+            <Card
+              key={note.id}
+              className="w-full max-w-sm overflow-hidden rounded-lg shadow"
+            >
               <CardHeader className="relative h-36 p-0 overflow-hidden">
                 {note.image ? (
                   <Image
@@ -181,7 +189,7 @@ export default function NotesContent() {
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-4xl font-bold text-primary/30 blur-sm scale-150 text-center px-4">
+                    <span className="text-4xl font-bold text-primary/30 blur-xs scale-150 text-center px-4">
                       {note.title}
                     </span>
                   </div>
@@ -200,7 +208,8 @@ export default function NotesContent() {
               <CardFooter className="mt-auto px-4 pb-4">
                 <div className="w-full flex justify-between items-center text-sm text-muted-foreground">
                   <div className="inline-flex items-center gap-1">
-                    <CalendarClockIcon size={16} /> Date
+                    <CalendarClockIcon size={16} />
+                    {format(new Date(note.createdAt), "MMM d, yyyy · h:mm a")}
                   </div>
                   <Link href={`/notes/${note.id}`}>
                     <Button variant="outline">View Note</Button>

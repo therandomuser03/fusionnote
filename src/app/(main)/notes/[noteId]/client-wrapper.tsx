@@ -1,11 +1,23 @@
-// src/app/(main)/notes/[noteId]/client-wrapper.tsx
-
 "use client";
+
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { JSONContent } from "@/types/tiptap";
 import { toast } from "sonner";
-import { Pin, PinOff } from "lucide-react";
+import { LucideTrash2, Pin, PinOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 const EditorLoading = () => (
   <div className="max-w-3xl mx-auto p-8">
@@ -24,7 +36,7 @@ const NoteDisplay = dynamic(() => import("@/components/notes/NoteDisplay"), {
 interface Note {
   title: string;
   content: JSONContent;
-  pinned?: boolean; // Optional, in case backend supports pinning
+  pinned?: boolean;
 }
 
 interface NoteClientPageProps {
@@ -35,7 +47,8 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
   const [note, setNote] = useState<Note | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isPinned, setIsPinned] = useState(false); // Pin state
+  const [isPinned, setIsPinned] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (!noteId) {
@@ -53,12 +66,9 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
         const res = await fetch(`/api/notes/${noteId}`);
 
         if (!res.ok) {
-          if (res.status === 404) {
-            throw new Error("Note not found");
-          }
-          if (res.status === 403) {
+          if (res.status === 404) throw new Error("Note not found");
+          if (res.status === 403)
             throw new Error("You don't have permission to view this note");
-          }
           throw new Error(
             `Failed to fetch note: ${res.status} ${res.statusText}`
           );
@@ -66,9 +76,7 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
 
         const data = await res.json();
 
-        if (!data) {
-          throw new Error("No data received from server");
-        }
+        if (!data) throw new Error("No data received from server");
 
         let parsedContent: JSONContent;
         try {
@@ -132,9 +140,32 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
     }
   };
 
-  if (isLoading) {
-    return <EditorLoading />;
-  }
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`/api/notes/delete/${noteId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error(
+          "❌ Failed to delete note",
+          res.status,
+          res.statusText,
+          text
+        );
+        throw new Error("Failed to delete note");
+      }
+
+      toast.success("Note moved to trash");
+      router.push("/trash");
+    } catch (err) {
+      console.error("❌ Error deleting note:", err);
+      toast.error("Failed to delete note");
+    }
+  };
+
+  if (isLoading) return <EditorLoading />;
 
   if (error) {
     return (
@@ -155,35 +186,55 @@ export default function NoteClientPage({ noteId }: NoteClientPageProps) {
     );
   }
 
-  if (!note) {
-    return <EditorLoading />;
-  }
+  if (!note) return <EditorLoading />;
 
   return (
     <div className="max-w-3xl mx-auto p-8 space-y-6">
-      <div className="flex items-center justify-end">
-  <button
-    onClick={handlePinToggle}
-    className={`group relative px-3 py-1 text-sm rounded transition
-      ${isPinned
-        ? "bg-yellow-400 text-black hover:bg-gray-200 hover:text-gray-700"
-        : "bg-gray-200 text-gray-700 hover:bg-yellow-400 hover:text-black"}
-    `}
-  >
-    {isPinned ? (
-      <>
-        <Pin className="group-hover:hidden" />
-        <PinOff className="hidden group-hover:inline" />
-      </>
-    ) : (
-      <>
-        <PinOff className="group-hover:hidden" />
-        <Pin className="hidden group-hover:inline" />
-      </>
-    )}
-  </button>
-</div>
+      <div className="flex items-center justify-end gap-2">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="icon">
+              <LucideTrash2 className="w-4 h-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Move note to trash?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This note will be moved to your trash. You can restore it later.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
+        <button
+          onClick={handlePinToggle}
+          className={`group relative px-3 py-1 text-sm rounded transition
+            ${
+              isPinned
+                ? "bg-yellow-400 text-black hover:bg-gray-200 hover:text-gray-700"
+                : "bg-gray-200 text-gray-700 hover:bg-yellow-400 hover:text-black"
+            }`}
+        >
+          {isPinned ? (
+            <>
+              <Pin className="group-hover:hidden" />
+              <PinOff className="hidden group-hover:inline" />
+            </>
+          ) : (
+            <>
+              <PinOff className="group-hover:hidden" />
+              <Pin className="hidden group-hover:inline" />
+            </>
+          )}
+        </button>
+      </div>
 
       <NoteDisplay title={note.title} content={note.content} />
     </div>

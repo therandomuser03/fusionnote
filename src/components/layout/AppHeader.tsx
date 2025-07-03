@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
-import { FileText, Pin, Plus, Trash } from "lucide-react";
+import { FileText, Pin, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -18,31 +18,36 @@ export default function AppHeader() {
   const [user, setUser] = useState<{ _id?: string; name?: string }>({});
   const [notesCount, setNotesCount] = useState<number>(0);
   const [pinnedCount, setPinnedCount] = useState<number>(0);
+  const [trashCount, setTrashCount] = useState<number>(0);
 
   useEffect(() => {
-    const fetchUserAndNotes = async () => {
-      try {
-        const userRes = await axios.post("/api/users/profile");
-        const fullName = userRes?.data?.data?.name || "";
-        const firstName = fullName.trim().split(" ")[0];
+  const fetchUserAndNotes = async () => {
+    try {
+      const userRes = await axios.post("/api/users/profile");
+      const fullName = userRes?.data?.data?.name || "";
+      const firstName = fullName.trim().split(" ")[0];
 
-        setUser({
-          _id: userRes.data.data._id,
-          name: firstName,
-        });
+      setUser({
+        _id: userRes.data.data._id,
+        name: firstName,
+      });
 
-        const notesRes = await axios.get<Note[]>("/api/notes");
-        const notes = notesRes.data;
+      const notesRes = await axios.get<Note[]>("/api/notes");
+      const notes = notesRes.data;
 
-        setNotesCount(notes.length);
-        setPinnedCount(notes.filter((note) => note.isPinned).length);
-      } catch (error) {
-        console.error("❌ Failed to fetch user or notes:", error);
-      }
-    };
+      setNotesCount(notes.length);
+      setPinnedCount(notes.filter((note) => note.isPinned).length);
 
-    fetchUserAndNotes();
-  }, []);
+      // ✅ Fetch deleted notes count
+      const deletedRes = await axios.get("/api/notes/delete");
+      setTrashCount(deletedRes?.data?.notes?.length || 0);
+    } catch (error) {
+      console.error("❌ Failed to fetch user or notes:", error);
+    }
+  };
+
+  fetchUserAndNotes();
+}, []);
 
   return (
     <div className="z-20 w-full flex items-center justify-center gap-8">
@@ -56,7 +61,7 @@ export default function AppHeader() {
           <h4>
             You have <FileText className="inline-flex size-5" /> {notesCount} notes |{" "}
             <Pin className="inline-flex size-5" /> {pinnedCount} pinned |{" "}
-            <Trash className="inline-flex size-5" /> _ in trash
+            <Trash2 className="inline-flex size-5" /> {trashCount} in trash
           </h4>
           <Tooltip>
             <TooltipTrigger asChild>

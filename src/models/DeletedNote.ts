@@ -8,6 +8,7 @@ export interface IDeletedNote extends Document {
   content: JSONContent;
   ownerId: mongoose.Types.ObjectId;
   deletedAt: Date;
+  workspaceId?: mongoose.Types.ObjectId;
 }
 
 const DeletedNoteSchema: Schema<IDeletedNote> = new Schema(
@@ -33,6 +34,11 @@ const DeletedNoteSchema: Schema<IDeletedNote> = new Schema(
     deletedAt: {
       type: Date,
       default: Date.now,
+    },
+    workspaceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Workspace",
+      required: false,
     },
   },
   { timestamps: true }

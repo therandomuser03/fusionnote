@@ -15,12 +15,14 @@ import Link from "next/link";
 import { CalendarClock } from "lucide-react";
 import { tiptapJsonToPlainText } from "@/utils/tiptap-extensions";
 import { JSONContent } from "@/types/tiptap";
+import { format } from "date-fns";
 
 type Note = {
   id: string;
   title: string;
   description: string;
   image?: string | null;
+  createdAt: string; // Add this
 };
 
 type RawNote = {
@@ -28,6 +30,7 @@ type RawNote = {
   title: string;
   content: string | JSONContent;
   image?: string | null;
+  createdAt: string; // Add this
 };
 
 export default function RecentNotes() {
@@ -64,6 +67,7 @@ export default function RecentNotes() {
             title: note.title,
             description,
             image: note.image || null,
+            createdAt: note.createdAt, // 👈 Add this
           };
         });
 
@@ -86,7 +90,10 @@ export default function RecentNotes() {
       <div className="z-20 w-full flex items-center justify-center gap-8">
         <div className="w-6xl inline-grid grid-cols-3 gap-4">
           {notes.map((note) => (
-            <Card key={note.id} className="w-full max-w-sm overflow-hidden rounded-lg shadow">
+            <Card
+              key={note.id}
+              className="w-full max-w-sm overflow-hidden rounded-lg shadow"
+            >
               <CardHeader className="relative h-36 p-0 overflow-hidden">
                 {note.image ? (
                   <Image
@@ -98,7 +105,7 @@ export default function RecentNotes() {
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-4xl font-bold text-primary/30 blur-sm scale-150 text-center px-4">
+                    <span className="text-4xl font-bold text-primary/30 blur-xs scale-150 text-center px-4">
                       {note.title}
                     </span>
                   </div>
@@ -117,7 +124,8 @@ export default function RecentNotes() {
               <CardFooter className="mt-auto px-4 pb-4">
                 <div className="w-full flex justify-between items-center text-sm text-muted-foreground">
                   <div className="inline-flex items-center gap-1">
-                    <CalendarClock size={16} /> Recently Created
+                    <CalendarClock size={16} />
+                    {format(new Date(note.createdAt), "MMM d, yyyy · h:mm a")}
                   </div>
                   <Link href={`/notes/${note.id}`}>
                     <Button variant="outline">View</Button>
