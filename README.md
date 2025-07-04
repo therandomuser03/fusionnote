@@ -9,51 +9,113 @@
 
 ## 🚀 Overview
 
-FusionNote is a real-time rich text editor built with a sleek, modern UI and robust backend — think of it as a powerful mix of Notion, Google Keep, and your favorite writing tool. Built on a full-stack Next.js setup, FusionNote offers seamless editing, collaboration, and organization.
+FusionNote is a feature-rich note-taking and collaboration platform built with modern web technologies. It combines the power of rich text editing, real-time collaboration, and intelligent organization to create a seamless writing and productivity experience. Think of it as a powerful fusion of Notion's flexibility, Google Keep's simplicity, and your favorite writing tool's functionality.
 
 ---
 
 ## ✨ Features
 
-- ⚡ **Real-time Rich Text Editing** powered by [TipTap](https://tiptap.dev)
-- 👥 **Authentication** via Supabase Auth
-- 📦 **Database** integration with MongoDB + Prisma ORM
-- 🧠 **Multi-space/Notebook Support** (personal + shared)
-- 📑 **Custom Blocks**: headings, code, checklists, images, etc.
-- 🔍 **Search, Filter, and Sort**
-- 🧩 **Modular Design** for future extensibility (tags, templates, AI, etc.)
-- 🌗 **Responsive UI** using TailwindCSS, Shadcn/UI, and Magic UI
+### 📝 **Rich Text Editing**
+- ⚡ **TipTap-powered Editor** with extensive formatting options
+- 🎨 **Rich Formatting**: Bold, italic, underline, strikethrough, highlights
+- 📑 **Block Elements**: Headings (H1-H6), code blocks, blockquotes, lists
+- 🔗 **Links & Media**: Embed links, images, and videos
+- ✅ **Task Lists**: Interactive checkboxes and to-do items
+- 📄 **PDF Export**: Download notes as PDF documents
+- 🎯 **Text Alignment**: Left, center, right, and justified alignment
+
+### 🔐 **Authentication & User Management**
+- 👤 **Secure Authentication**: JWT-based auth with bcrypt password hashing
+- ✉️ **Email Verification**: Secure email verification system
+- 👥 **User Profiles**: Customizable profiles with image uploads
+- 🔒 **Password Security**: Secure password reset and management
+
+### 📚 **Note Organization**
+- 🏷️ **Smart Tagging System**: Organize notes with custom tags
+- 📌 **Pinned Notes**: Quick access to important notes
+- 🗂️ **Workspaces**: Collaborative spaces with role-based permissions
+- 🗑️ **Trash & Recovery**: Soft delete with restore functionality
+- 🔍 **Advanced Search**: Full-text search across all notes
+- ⭐ **Favorites**: Mark and quickly access favorite notes
+
+### 🤝 **Collaboration Features**
+- 👥 **Workspace Collaboration**: Share workspaces with team members
+- 🎭 **Role-based Permissions**: Owner, Admin, Editor, and Viewer roles
+- 📝 **Note Sharing**: Granular permissions for individual notes
+- 💬 **Comments System**: Threaded comments on notes (coming soon)
+- 📜 **Version History**: Track changes and restore previous versions
+
+### 🎨 **User Experience**
+- 🌗 **Dark/Light Mode**: Beautiful themes for any preference
+- 📱 **Responsive Design**: Works seamlessly on desktop and mobile
+- ⚡ **Real-time Updates**: Instant syncing across devices
+- 🎯 **Command Palette**: Quick actions and navigation
+- 🔄 **Auto-save**: Never lose your work with automatic saving
+- 💫 **Smooth Animations**: Polished UI with Magic UI components
+
+### 🚀 **Additional Features**
+- 📊 **Feedback System**: Built-in user feedback and rating system
+- 🤖 **AI Integration**: Note summarization capabilities
+- 📤 **Export Options**: Multiple export formats
+- 🔔 **Email Notifications**: Stay updated with email alerts
+- 🖼️ **Media Support**: Image uploads with Cloudinary integration
 
 ---
 
 ## 🧱 Tech Stack
 
-| Layer           | Tech                                                                 |
+| Layer           | Technology                                                           |
 |----------------|----------------------------------------------------------------------|
-| Frontend        | [Next.js (App Router)](https://nextjs.org/), [TypeScript](https://www.typescriptlang.org/) |
-| UI              | [TailwindCSS](https://tailwindcss.com/), [Shadcn/UI](https://ui.shadcn.com/), [Magic UI](https://magicui.design/) |
-| Editor Engine   | [TipTap](https://tiptap.dev/)                                        |
-| Authentication  | [Supabase Auth](https://supabase.com/auth)                          |
-| Database        | [MongoDB](https://www.mongodb.com/), [Prisma ORM](https://www.prisma.io/) |
-| Hosting         | [Vercel](https://vercel.com/) (recommended)                         |
+| **Frontend**    | [Next.js 15](https://nextjs.org/) (App Router), [TypeScript](https://www.typescriptlang.org/), [React 19](https://react.dev/) |
+| **UI & Styling** | [TailwindCSS 4](https://tailwindcss.com/), [Shadcn/UI](https://ui.shadcn.com/), [Magic UI](https://magicui.design/), [Lucide Icons](https://lucide.dev/) |
+| **Editor**      | [TipTap](https://tiptap.dev/) with custom extensions and toolbar    |
+| **Authentication** | Custom JWT-based auth with [bcrypt](https://github.com/dcodeIO/bcrypt.js) |
+| **Database**    | [MongoDB](https://www.mongodb.com/) with [Prisma ORM](https://www.prisma.io/), [Mongoose](https://mongoosejs.com/) |
+| **File Storage** | [Cloudinary](https://cloudinary.com/) for image and media uploads  |
+| **Email**       | [Nodemailer](https://nodemailer.com/) with [Resend](https://resend.com/) |
+| **PDF Export**  | [html2pdf.js](https://github.com/eKoopmans/html2pdf.js) for document export |
+| **Deployment** | [Vercel](https://vercel.com/) (recommended)                         |
 
 ---
 
-## 📁 Project Structure (WIP)
+## 📁 Project Structure
 
 ```bash
 fusionnote/
-├── app/                      # Next.js app directory
-│   ├── dashboard/            # Main dashboard and editor UI
-│   ├── auth/                 # Auth routes and logic
-├── components/               # Reusable UI components
-├── lib/                      # Utils, constants, helpers
-├── context/                  # React context providers
-├── prisma/                   # Prisma schema and migrations
-├── styles/                   # Global styles
-├── types/                    # TypeScript types
-├── public/                   # Static assets
-├── .env                      # Environment variables
+├── src/
+│   ├── app/                  # Next.js 15 App Router
+│   │   ├── (auth)/          # Authentication routes (login, signup, verify)
+│   │   ├── (main)/          # Main application routes
+│   │   │   ├── dashboard/   # Dashboard and overview
+│   │   │   ├── notes/       # Note editing and management
+│   │   │   ├── search/      # Search functionality
+│   │   │   ├── tags/        # Tag management
+│   │   │   ├── trash/       # Deleted notes management
+│   │   │   └── settings/    # User settings
+│   │   ├── api/             # API routes and endpoints
+│   │   │   ├── notes/       # Note CRUD operations
+│   │   │   ├── users/       # User management
+│   │   │   └── feedback/    # Feedback system
+│   │   └── globals.css      # Global styles
+│   ├── components/          # Reusable UI components
+│   │   ├── ui/             # Shadcn/UI components
+│   │   ├── auth/           # Authentication components
+│   │   ├── editor/         # TipTap editor components
+│   │   ├── layout/         # Layout and navigation
+│   │   ├── notes/          # Note-related components
+│   │   ├── tiptap/         # TipTap extensions and customizations
+│   │   └── magicui/        # Magic UI components
+│   ├── lib/                # Utilities and configurations
+│   ├── context/            # React context providers
+│   ├── hooks/              # Custom React hooks
+│   ├── models/             # Data models and schemas
+│   ├── types/              # TypeScript type definitions
+│   ├── utils/              # Helper functions and utilities
+│   └── styles/             # SCSS styles and variables
+├── prisma/                 # Database schema and migrations
+├── public/                 # Static assets (images, icons)
+├── .env.example           # Environment variables template
+└── package.json           # Dependencies and scripts
 ```
 
 
@@ -82,75 +144,179 @@ pnpm install
 
 3. Setup Environment Variables
 
-
-
-Create a .env.local file and add:
+Create a `.env.local` file in the root directory and add the following variables:
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+# Database Configuration
+MONGO_URL="mongodb+srv://<username>:<password>@cluster.mongodb.net/fusionnote?retryWrites=true&w=majority"
+DATABASE_URL="mongodb+srv://<username>:<password>@cluster.mongodb.net/fusionnote?retryWrites=true&w=majority"
 
-DATABASE_URL=mongodb+srv://<user>:<password>@cluster.mongodb.net/fusionnote?retryWrites=true&w=majority
+# Authentication
+TOKEN_SECRET="your-super-secure-jwt-secret-key-here"
+
+# Application Domain
+DOMAIN="http://localhost:3000"
+NEXT_PUBLIC_DOMAIN="http://localhost:3000"
+
+# Email Configuration (Optional - for email verification)
+NODEMAILER_EMAIL="your-email@gmail.com"
+NODEMAILER_PASSWORD="your-app-password"
+
+# Cloudinary Configuration (Optional - for image uploads)
+CLOUDINARY_CLOUD_NAME="your-cloudinary-cloud-name"
+CLOUDINARY_API_KEY="your-cloudinary-api-key"
+CLOUDINARY_API_SECRET="your-cloudinary-api-secret"
+
+# Resend Configuration (Optional - alternative email service)
+RESEND_API_KEY="your-resend-api-key"
 ```
 
-4. Generate Prisma Client
+> **Note**: You can find an example configuration in `.env.example`. Make sure to replace all placeholder values with your actual credentials.
 
+4. Generate Prisma Client
 
 ```bash
 npx prisma generate
 ```
 
-5. Run the Dev Server
-
+5. Run the Development Server
 
 ```bash
 npm run dev
+# or
+pnpm dev
+# or
+yarn dev
 ```
 
-<!-- 
+6. Access the Application
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to see FusionNote in action!
+
+### 🗄️ Database Setup
+
+1. **MongoDB Atlas** (Recommended):
+   - Create a free account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+   - Create a new cluster and database
+   - Get your connection string and add it to your `.env.local`
+
+2. **Local MongoDB**:
+   - Install MongoDB locally
+   - Use connection string: `mongodb://localhost:27017/fusionnote`
+
+### 📧 Email Configuration (Optional)
+
+For email verification and notifications:
+
+1. **Gmail Setup**:
+   - Enable 2-factor authentication on your Gmail account
+   - Generate an "App Password" for Nodemailer
+   - Add credentials to your `.env.local`
+
+2. **Resend Setup** (Alternative):
+   - Sign up at [Resend](https://resend.com/)
+   - Get your API key and add it to `.env.local`
+
 ---
 
 ## 🛣️ Roadmap
 
-[x] Setup authentication (Supabase)
+### ✅ **Completed Features**
+- [x] Custom JWT authentication system
+- [x] Responsive dashboard and navigation
+- [x] Rich text editor with TipTap
+- [x] MongoDB + Prisma integration
+- [x] Note CRUD operations
+- [x] Tagging system
+- [x] Search functionality
+- [x] Workspace collaboration
+- [x] Role-based permissions
+- [x] Trash and recovery system
+- [x] Dark/Light theme support
+- [x] PDF export functionality
+- [x] Image upload with Cloudinary
+- [x] Email verification system
+- [x] User feedback system
+- [x] Note pinning and favorites
+- [x] Version history tracking
 
-[x] Create responsive dashboard
+### 🚧 **In Progress**
+- [ ] Real-time collaborative editing with Y.js/CRDT
+- [ ] Enhanced AI features (content suggestions, auto-completion)
+- [ ] Mobile app (React Native)
+- [ ] Advanced comment system
+- [ ] Note templates
 
-[x] Implement basic rich text editing
-
-[x] MongoDB + Prisma integration
-
-[ ] Note sharing & collaboration
-
-[ ] AI-powered suggestions (e.g., summarizer, title generator)
-
-[ ] Realtime sync with Y.js / CRDT
-
-[ ] Mobile-first UI
-
-[ ] Offline support
--->
+### 🎯 **Planned Features**
+- [ ] Offline support with service workers
+- [ ] Advanced export options (Word, Markdown, HTML)
+- [ ] Plugin system for extensions
+- [ ] Team analytics and insights
+- [ ] Integration with third-party services (Google Drive, Notion, etc.)
+- [ ] Advanced search with filters and sorting
+- [ ] Calendar integration
+- [ ] Note linking and backlinking
 
 
 ---
 
 ## 🧑‍💻 Contributing
 
-Contributions are welcome! Please fork the repo and submit a pull request.
+We welcome contributions from developers of all skill levels! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
 
-1. ⭐ Star this project
+### 🚀 **How to Contribute**
 
+1. **⭐ Star this repository** to show your support
 
-2. 🍴 Fork it
+2. **🍴 Fork the repository** to your GitHub account
 
+3. **📥 Clone your fork**:
+   ```bash
+   git clone https://github.com/your-username/fusionnote.git
+   cd fusionnote
+   ```
 
-3. 🛠️ Create your feature branch: git checkout -b feature/your-feature
+4. **🛠️ Create a feature branch**:
+   ```bash
+   git checkout -b feature/your-amazing-feature
+   ```
 
+5. **💻 Make your changes** and test thoroughly
 
-4. 📤 Commit and push: git commit -am 'Add your feature' && git push
+6. **📝 Commit your changes**:
+   ```bash
+   git commit -m "feat: add your amazing feature"
+   ```
 
+7. **📤 Push to your fork**:
+   ```bash
+   git push origin feature/your-amazing-feature
+   ```
 
-5. 🔁 Open a Pull Request
+8. **🔁 Open a Pull Request** with a clear description of your changes
+
+### 📋 **Contribution Guidelines**
+
+- Follow the existing code style and conventions
+- Write clear, descriptive commit messages
+- Test your changes thoroughly before submitting
+- Update documentation if necessary
+- Be respectful and constructive in discussions
+
+### 🐛 **Bug Reports**
+
+Found a bug? Please open an issue with:
+- Clear description of the problem
+- Steps to reproduce
+- Expected vs actual behavior
+- Screenshots if applicable
+
+### 💡 **Feature Requests**
+
+Have an idea? Open an issue with:
+- Clear description of the feature
+- Use case and benefits
+- Any relevant mockups or examples
 
 
 
@@ -166,29 +332,48 @@ MIT
 
 ## 🙌 Acknowledgements
 
-TipTap Editor
+Special thanks to the amazing open-source projects and services that make FusionNote possible:
 
-Supabase
+- **[TipTap](https://tiptap.dev/)** - The headless rich text editor framework
+- **[Next.js](https://nextjs.org/)** - The React framework for production
+- **[Shadcn/UI](https://ui.shadcn.com/)** - Beautiful and accessible component library
+- **[Magic UI](https://magicui.design/)** - Stunning animated components
+- **[TailwindCSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[MongoDB](https://www.mongodb.com/)** - The document database
+- **[Prisma](https://www.prisma.io/)** - Next-generation ORM
+- **[Cloudinary](https://cloudinary.com/)** - Image and video management
+- **[Vercel](https://vercel.com/)** - Platform for frontend frameworks
+- **[Lucide](https://lucide.dev/)** - Beautiful and consistent icon library
 
-Shadcn UI
-
-Magic UI
-
-MongoDB
-
-Prisma ORM
+And many other fantastic libraries and tools that power this project! 🚀
 
 
 
 ---
 
-## 📬 Contact
+## 📬 Contact & Support
 
-Feel free to connect with me:
+Have questions, suggestions, or just want to say hello? We'd love to hear from you!
 
-GitHub: [@therandomuser03](https://github.com/therandomuser03)
+- **GitHub**: [@therandomuser03](https://github.com/therandomuser03)
+- **Twitter**: [@TheRandomUser03](https://x.com/TheRandomUser03)
+- **Issues**: [GitHub Issues](https://github.com/therandomuser03/fusionnote/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/therandomuser03/fusionnote/discussions)
 
-Twitter: [@TheRandomUser03](https://x.com/TheRandomUser03)
+### 🆘 **Getting Help**
+
+- 📚 Check the documentation and README first
+- 🔍 Search existing issues before creating new ones
+- 💬 Join our community discussions for general questions
+- 🐛 Create detailed bug reports for technical issues
+
+### 💖 **Show Your Support**
+
+If you find FusionNote helpful:
+- ⭐ Star this repository
+- 🐦 Share it on social media
+- 📝 Write a blog post or review
+- 💝 Consider sponsoring the project
 
 
 
