@@ -1,7 +1,5 @@
 import { JSONContent } from "@tiptap/react";
 
-export const dynamic = "force-dynamic";
-
 type Note = {
   _id: string;
   title: string;
@@ -26,13 +24,14 @@ async function getNotesForTag(slug: string): Promise<Note[]> {
 }
 
 // ✅ Don't type the props with a custom type — inline directly
-export default async function TagPage({ params }: { params: { slug: string } }) {
-  const notes = await getNotesForTag(params.slug);
+export default async function TagPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const notes = await getNotesForTag(resolvedParams.slug);
 
   return (
     <div className="max-w-4xl mx-auto py-12">
       <h1 className="text-3xl font-bold mb-6 capitalize">
-        {params.slug.replace(/-/g, " ")}
+        {resolvedParams.slug.replace(/-/g, " ")}
       </h1>
 
       {notes.length === 0 ? (

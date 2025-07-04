@@ -6,18 +6,19 @@ import DeletedNote from '@/models/DeletedNote';
 import { connect } from '@/lib/db';
 
 type Context = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function DELETE(req: NextRequest, { params }: Context) {
   await connect();
 
-  if (!params?.id) {
+  const resolvedParams = await params;
+  if (!resolvedParams?.id) {
     return NextResponse.json({ success: false, error: 'Note ID is required' }, { status: 400 });
   }
 
   try {
-    const note = await Note.findById(params.id);
+    const note = await Note.findById(resolvedParams.id);
 
     if (!note) {
       return NextResponse.json({ success: false, error: 'Note not found' }, { status: 404 });
@@ -32,7 +33,7 @@ export async function DELETE(req: NextRequest, { params }: Context) {
       deletedAt: new Date(),
     });
 
-    await Note.findByIdAndDelete(params.id);
+    await Note.findByIdAndDelete(resolvedParams.id);
 
     return NextResponse.json({ success: true, message: 'Note successfully moved to trash' });
   } catch (err) {
@@ -44,12 +45,13 @@ export async function DELETE(req: NextRequest, { params }: Context) {
 export async function PATCH(req: NextRequest, { params }: Context) {
   await connect();
 
-  if (!params?.id) {
+  const resolvedParams = await params;
+  if (!resolvedParams?.id) {
     return NextResponse.json({ success: false, error: 'Note ID is required' }, { status: 400 });
   }
 
   try {
-    const deletedNote = await DeletedNote.findById(params.id);
+    const deletedNote = await DeletedNote.findById(resolvedParams.id);
 
     if (!deletedNote) {
       return NextResponse.json({ success: false, error: 'Deleted note not found' }, { status: 404 });
@@ -69,7 +71,7 @@ export async function PATCH(req: NextRequest, { params }: Context) {
       createdAt: new Date(),
     });
 
-    await DeletedNote.findByIdAndDelete(params.id);
+    await DeletedNote.findByIdAndDelete(resolvedParams.id);
 
     return NextResponse.json({ success: true, message: 'Note successfully restored' });
   } catch (err) {
