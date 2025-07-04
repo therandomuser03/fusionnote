@@ -55,11 +55,6 @@ export default function Dashboard() {
         <PinnedNotes />
       </div>
 
-      {/* Main content should grow to fill space */}
-      {/* <div className="flex-grow pt-16 pb-16">
-        <AppContent />
-      </div> */}
-
       <div className="flex-grow pt-16 pb-16">
         <RecentNotes />
       </div>

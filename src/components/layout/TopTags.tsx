@@ -1,6 +1,7 @@
 import React from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 const tags = ["Work", "Ideas", "Personal", "Meeting"];
 
@@ -24,7 +25,9 @@ export default function TopTags() {
         </div>
 
         <div className="z-20 text-2xl font-medium mx-auto items-center justify-center py-3 max-w-6xl mt-6">
+          <Link href="/tags">
           <Button variant="outline">View All Tags</Button>
+          </Link>
         </div>
       {/* </div> */}
     </>

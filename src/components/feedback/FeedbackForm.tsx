@@ -54,7 +54,7 @@ export default function FeedbackForm({ userEmail = "" }: { userEmail?: string })
   };
 
   return (
-    <div className="max-w-md mx-auto p-6">
+    <div className="max-w-6xl justify-start mx-auto p-6">
       <h1 className="text-2xl font-semibold mb-4">We’d love your feedback</h1>
 
       {submitted ? (
@@ -104,7 +104,7 @@ export default function FeedbackForm({ userEmail = "" }: { userEmail?: string })
           <Button
             variant="default"
             type="submit"
-            className="w-full py-2"
+            className="w-fit py-2"
             disabled={loading}
           >
             {loading ? "Submitting..." : "Submit Feedback"}

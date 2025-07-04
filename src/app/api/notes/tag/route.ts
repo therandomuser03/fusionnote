@@ -14,7 +14,10 @@ export async function POST(request: NextRequest) {
     const { tags } = body;
 
     if (!Array.isArray(tags) || tags.length === 0) {
-      return NextResponse.json({ error: "Tags must be a non-empty array." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Tags must be a non-empty array." },
+        { status: 400 }
+      );
     }
 
     // Find notes that include any of the tags
@@ -24,8 +27,16 @@ export async function POST(request: NextRequest) {
     }).sort({ createdAt: -1 });
 
     return NextResponse.json(notes, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching notes by tag:", error);
-    return NextResponse.json({ error: error.message || "Something went wrong." }, { status: 500 });
+
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(
+      { error: "Something went wrong." },
+      { status: 500 }
+    );
   }
 }

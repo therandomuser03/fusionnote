@@ -172,17 +172,21 @@ export default function AppNavbar() {
                     <Link href="/profile">
                       <DropdownMenuItem>
                         <UserCircle className="mr-2 h-4 w-4" />
-                        Account
+                        Profile / Account
                       </DropdownMenuItem>
                     </Link>
+                    <Link href="/billing">
                     <DropdownMenuItem>
                       <CreditCard className="mr-2 h-4 w-4" />
                       Billing
                     </DropdownMenuItem>
+                    </Link>
+                    <Link href="/feedback">
                     <DropdownMenuItem>
                       <Bell className="mr-2 h-4 w-4" />
-                      Notifications
+                      Feedback / Requests
                     </DropdownMenuItem>
+                    </Link>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem variant="destructive" onClick={logout}>

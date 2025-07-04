@@ -1,11 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button } from "../ui/button";
-import { Plus } from "lucide-react";
-import Link from "next/link";
 import axios from "axios";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function TagsHeader() {
   const [, setData] = useState<{ _id?: string; username?: string }>({});

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import DeletedNote from "@/models/DeletedNote";
 import { connect } from "@/lib/db";
 
-export async function GET(req: Request) {
+export async function GET() {
   await connect();
 
   try {

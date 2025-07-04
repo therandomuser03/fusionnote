@@ -1,4 +1,4 @@
-// app/changelog/feedback/page.tsx
+// app/feedback/page.tsx
 
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
@@ -25,7 +25,7 @@ export default async function Feedback() {
 const token = (await cookies()).get("token")?.value;
 
   if (!token) {
-    redirect(`/login?callbackUrl=/changelog/feedback`);
+    redirect(`/login?callbackUrl=/feedback`);
   }
 
   try {
@@ -45,13 +45,6 @@ const token = (await cookies()).get("token")?.value;
           </BreadcrumbLink>
           </BreadcrumbItem>
 
-          <BreadcrumbSeparator />
-
-          <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/">Changelog</Link>
-          </BreadcrumbLink>
-          </BreadcrumbItem>
           <BreadcrumbSeparator />
 
           <BreadcrumbItem>
@@ -78,6 +71,6 @@ const token = (await cookies()).get("token")?.value;
     </div>
   );
 } catch {
-    redirect(`/login?callbackUrl=/changelog/feedback`)
+    redirect(`/login?callbackUrl=/feedback`)
   }
 }
