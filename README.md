@@ -219,47 +219,6 @@ For email verification and notifications:
 
 ---
 
-## 🛣️ Roadmap
-
-### ✅ **Completed Features**
-- [x] Custom JWT authentication system
-- [x] Responsive dashboard and navigation
-- [x] Rich text editor with TipTap
-- [x] MongoDB + Prisma integration
-- [x] Note CRUD operations
-- [x] Tagging system
-- [x] Search functionality
-- [x] Workspace collaboration
-- [x] Role-based permissions
-- [x] Trash and recovery system
-- [x] Dark/Light theme support
-- [x] PDF export functionality
-- [x] Image upload with Cloudinary
-- [x] Email verification system
-- [x] User feedback system
-- [x] Note pinning and favorites
-- [x] Version history tracking
-
-### 🚧 **In Progress**
-- [ ] Real-time collaborative editing with Y.js/CRDT
-- [ ] Enhanced AI features (content suggestions, auto-completion)
-- [ ] Mobile app (React Native)
-- [ ] Advanced comment system
-- [ ] Note templates
-
-### 🎯 **Planned Features**
-- [ ] Offline support with service workers
-- [ ] Advanced export options (Word, Markdown, HTML)
-- [ ] Plugin system for extensions
-- [ ] Team analytics and insights
-- [ ] Integration with third-party services (Google Drive, Notion, etc.)
-- [ ] Advanced search with filters and sorting
-- [ ] Calendar integration
-- [ ] Note linking and backlinking
-
-
----
-
 ## 🧑‍💻 Contributing
 
 We welcome contributions from developers of all skill levels! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
