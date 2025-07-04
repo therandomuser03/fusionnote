@@ -84,38 +84,38 @@ FusionNote is a feature-rich note-taking and collaboration platform built with m
 fusionnote/
 ├── src/
 │   ├── app/                  # Next.js 15 App Router
-│   │   ├── (auth)/          # Authentication routes (login, signup, verify)
-│   │   ├── (main)/          # Main application routes
-│   │   │   ├── dashboard/   # Dashboard and overview
-│   │   │   ├── notes/       # Note editing and management
-│   │   │   ├── search/      # Search functionality
-│   │   │   ├── tags/        # Tag management
-│   │   │   ├── trash/       # Deleted notes management
-│   │   │   └── settings/    # User settings
-│   │   ├── api/             # API routes and endpoints
-│   │   │   ├── notes/       # Note CRUD operations
-│   │   │   ├── users/       # User management
-│   │   │   └── feedback/    # Feedback system
-│   │   └── globals.css      # Global styles
-│   ├── components/          # Reusable UI components
-│   │   ├── ui/             # Shadcn/UI components
-│   │   ├── auth/           # Authentication components
-│   │   ├── editor/         # TipTap editor components
-│   │   ├── layout/         # Layout and navigation
-│   │   ├── notes/          # Note-related components
-│   │   ├── tiptap/         # TipTap extensions and customizations
-│   │   └── magicui/        # Magic UI components
-│   ├── lib/                # Utilities and configurations
-│   ├── context/            # React context providers
-│   ├── hooks/              # Custom React hooks
-│   ├── models/             # Data models and schemas
-│   ├── types/              # TypeScript type definitions
-│   ├── utils/              # Helper functions and utilities
-│   └── styles/             # SCSS styles and variables
-├── prisma/                 # Database schema and migrations
-├── public/                 # Static assets (images, icons)
-├── .env.example           # Environment variables template
-└── package.json           # Dependencies and scripts
+│   │   ├── (auth)/           # Authentication routes (login, signup, verify)
+│   │   ├── (main)/           # Main application routes
+│   │   │   ├── dashboard/    # Dashboard and overview
+│   │   │   ├── notes/        # Note editing and management
+│   │   │   ├── search/       # Search functionality
+│   │   │   ├── tags/         # Tag management
+│   │   │   ├── trash/        # Deleted notes management
+│   │   │   └── settings/     # User settings
+│   │   ├── api/              # API routes and endpoints
+│   │   │   ├── notes/        # Note CRUD operations
+│   │   │   ├── users/        # User management
+│   │   │   └── feedback/     # Feedback system
+│   │   └── globals.css       # Global styles
+│   ├── components/           # Reusable UI components
+│   │   ├── ui/               # Shadcn/UI components
+│   │   ├── auth/             # Authentication components
+│   │   ├── editor/           # TipTap editor components
+│   │   ├── layout/           # Layout and navigation
+│   │   ├── notes/            # Note-related components
+│   │   ├── tiptap/           # TipTap extensions and customizations
+│   │   └── magicui/          # Magic UI components
+│   ├── lib/                  # Utilities and configurations
+│   ├── context/              # React context providers
+│   ├── hooks/                # Custom React hooks
+│   ├── models/               # Data models and schemas
+│   ├── types/                # TypeScript type definitions
+│   ├── utils/                # Helper functions and utilities
+│   └── styles/               # SCSS styles and variables
+├── prisma/                   # Database schema and migrations
+├── public/                   # Static assets (images, icons)
+├── .env.example              # Environment variables template
+└── package.json              # Dependencies and scripts
 ```
 
 
@@ -272,7 +272,7 @@ We welcome contributions from developers of all skill levels! Whether you're fix
 
 3. **📥 Clone your fork**:
    ```bash
-   git clone https://github.com/your-username/fusionnote.git
+   git clone https://github.com/therandomuser03/fusionnote.git
    cd fusionnote
    ```
 
