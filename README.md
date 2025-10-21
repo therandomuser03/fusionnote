@@ -335,7 +335,6 @@ If you find FusionNote helpful:
 - 💝 Consider sponsoring the project
 
 
-
 ---
 
 > Built with ❤️ by Anubhab
